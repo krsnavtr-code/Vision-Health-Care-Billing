@@ -1,11 +1,55 @@
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const { Server } = require("socket.io");
-require("dotenv").config();
+import express from "express";
+import http from "http";
+import cors from "cors";
+import { Server } from "socket.io";
+import mongoose from "mongoose";
+import dns from "dns";
+import dotenv from "dotenv";
+
+import authRoutes from "./routes/authRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
+import equipmentRoutes from "./routes/equipmentRoutes.js";
+import invoiceRoutes from "./routes/invoiceRoutes.js";
+import shiftRoutes from "./routes/shiftRoutes.js";
+
+// Only set DNS in development/local environment
+if (process.env.NODE_ENV !== "production") {
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
+}
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Database connection
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error("MONGODB_URI is not defined in .env file!");
+  process.exit(1);
+}
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB successfully!"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/inventory", inventoryRoutes);
+app.use("/api/equipment", equipmentRoutes);
+app.use("/api/invoices", invoiceRoutes);
+app.use("/api/shifts", shiftRoutes);
+
+// Base welcome route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Vision Health Care Billing API!" });
+});
 
 const server = http.createServer(app);
 
