@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { apiCall } from "../utils/api";
-import { 
-  Building2, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  FileText, 
-  Globe, 
-  Save, 
-  Loader2, 
-  CheckCircle2, 
-  CreditCard, 
+import {
+  Building2,
+  MapPin,
+  Phone,
+  Mail,
+  FileText,
+  Globe,
+  Save,
+  Loader2,
+  CheckCircle2,
+  CreditCard,
   Sparkles,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 
 export default function BusinessSettings() {
@@ -29,6 +29,7 @@ export default function BusinessSettings() {
     bankAccountNo: "",
     bankIfscCode: "",
     accountHolderName: "",
+    signatoryName: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -75,7 +76,7 @@ export default function BusinessSettings() {
       setSuccess(false);
 
       const response = await apiCall("/business-details", "PUT", details);
-      
+
       if (response && response.success) {
         setDetails(response.data);
         setSuccess(true);
@@ -112,14 +113,18 @@ export default function BusinessSettings() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xxs font-extrabold uppercase tracking-widest">
               <Sparkles className="h-3 w-3" /> Billing Configuration
             </div>
-            <h1 className="text-2xl font-black tracking-tight">Business Settings</h1>
+            <h1 className="text-2xl font-black tracking-tight">
+              Business Settings
+            </h1>
             <p className="text-xs text-slate-400 max-w-xl font-medium leading-relaxed">
-              Configure your clinical or pharmacy business details, bank details, tax rates, and UPI payments. 
-              These settings are stored centrally in the database and automatically synchronized on all generated Tax Invoices.
+              Configure your clinical or pharmacy business details, bank
+              details, tax rates, and UPI payments. These settings are stored
+              centrally in the database and automatically synchronized on all
+              generated Tax Invoices.
             </p>
           </div>
-          
-          <button 
+
+          <button
             onClick={fetchBusinessDetails}
             className="self-start md:self-center flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700/80 rounded-xl text-xs font-bold text-slate-300 transition"
           >
@@ -141,7 +146,8 @@ export default function BusinessSettings() {
         {success && (
           <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-xs text-emerald-700 font-bold leading-relaxed shadow-sm flex items-center gap-3">
             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-            Invoice configuration saved successfully! Central PDF templates updated dynamically.
+            Invoice configuration saved successfully! Central PDF templates
+            updated dynamically.
           </div>
         )}
 
@@ -154,34 +160,41 @@ export default function BusinessSettings() {
                   <Building2 className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-slate-800">Business Profile</h3>
-                  <p className="text-xxs text-slate-400 font-medium">Core company details displayed at the top left of your bills.</p>
+                  <h3 className="text-sm font-black text-slate-800">
+                    Business Profile
+                  </h3>
+                  <p className="text-xxs text-slate-400 font-medium">
+                    Core company details displayed at the top left of your
+                    bills.
+                  </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5 col-span-1 md:col-span-2">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Business / Company Name</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Business / Company Name
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={details.name}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. Shreyansh Pharma and Home Care Services"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5 col-span-1 md:col-span-2">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Complete Address</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Complete Address
+                  </label>
                   <div className="relative">
                     <MapPin className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                     <textarea
                       name="address"
                       value={details.address}
                       onChange={handleChange}
-                      required
                       rows="2"
                       placeholder="e.g. Najafgarh, New Delhi"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition resize-none"
@@ -190,7 +203,9 @@ export default function BusinessSettings() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Phone / Contact Number</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Phone / Contact Number
+                  </label>
                   <div className="relative">
                     <Phone className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                     <input
@@ -198,7 +213,6 @@ export default function BusinessSettings() {
                       name="phoneNumber"
                       value={details.phoneNumber}
                       onChange={handleChange}
-                      required
                       placeholder="e.g. 07014626159"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                     />
@@ -206,7 +220,9 @@ export default function BusinessSettings() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Business Email Address</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Business Email Address
+                  </label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                     <input
@@ -214,7 +230,6 @@ export default function BusinessSettings() {
                       name="email"
                       value={details.email}
                       onChange={handleChange}
-                      required
                       placeholder="e.g. business@gmail.com"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                     />
@@ -229,40 +244,48 @@ export default function BusinessSettings() {
                   <FileText className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-slate-800">Tax & Registration Details</h3>
-                  <p className="text-xxs text-slate-400 font-medium">GST registration number and corporate registration states.</p>
+                  <h3 className="text-sm font-black text-slate-800">
+                    Tax & Registration Details
+                  </h3>
+                  <p className="text-xxs text-slate-400 font-medium">
+                    GST registration number and corporate registration states.
+                  </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">GSTIN Number</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    GSTIN Number
+                  </label>
                   <input
                     type="text"
                     name="gstin"
                     value={details.gstin}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. 07GPYPS6223A1ZH"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">State & Code</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    State & Code
+                  </label>
                   <input
                     type="text"
                     name="state"
                     value={details.state}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. 07-Delhi"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Website URL</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Website URL
+                  </label>
                   <div className="relative">
                     <Globe className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                     <input
@@ -270,7 +293,6 @@ export default function BusinessSettings() {
                       name="website"
                       value={details.website}
                       onChange={handleChange}
-                      required
                       placeholder="e.g. www.business.com"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                     />
@@ -288,66 +310,76 @@ export default function BusinessSettings() {
                   <CreditCard className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-slate-800">Payment & Bank Setup</h3>
-                  <p className="text-xxs text-slate-400 font-medium">Configure where customers pay you. Updates PDF QR scan data.</p>
+                  <h3 className="text-sm font-black text-slate-800">
+                    Payment & Bank Setup
+                  </h3>
+                  <p className="text-xxs text-slate-400 font-medium">
+                    Configure where customers pay you. Updates PDF QR scan data.
+                  </p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Account Holder Name</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Account Holder Name
+                  </label>
                   <input
                     type="text"
                     name="accountHolderName"
                     value={details.accountHolderName}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. Shreyansh pharma"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Bank Name</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Bank Name
+                  </label>
                   <input
                     type="text"
                     name="bankName"
                     value={details.bankName}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. Au Small Finance Bank Limited"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Bank Branch / Location</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Bank Branch / Location
+                  </label>
                   <input
                     type="text"
                     name="bankBranch"
                     value={details.bankBranch}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. Dwarka Delhi"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">Account Number</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Account Number
+                  </label>
                   <input
                     type="text"
                     name="bankAccountNo"
                     value={details.bankAccountNo}
                     onChange={handleChange}
-                    required
                     placeholder="e.g. 2402210060989650"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">IFSC Code</label>
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    IFSC Code
+                  </label>
                   <input
                     type="text"
                     name="bankIfscCode"
@@ -355,6 +387,20 @@ export default function BusinessSettings() {
                     onChange={handleChange}
                     required
                     placeholder="e.g. AUBL0002100"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    Authorized Signatory Name (on Bill)
+                  </label>
+                  <input
+                    type="text"
+                    name="signatoryName"
+                    value={details.signatoryName}
+                    onChange={handleChange}
+                    placeholder="e.g. Dilip"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
                   />
                 </div>
@@ -368,7 +414,7 @@ export default function BusinessSettings() {
           <p className="text-xxs text-slate-400 font-extrabold uppercase tracking-wider hidden sm:block">
             * Ensure all values match official GST registry
           </p>
-          
+
           <button
             type="submit"
             disabled={saving}

@@ -115,21 +115,19 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
   const BORDER_COLOR = "#CBD5E1"; // Borders grey
 
   // Extract dynamic details with defaults
-  const bizName =
-    businessDetails?.name || "Vision Health Care and Home Care Services";
-  const bizAddress = businessDetails?.address || "Sector 62, Noida, NCR Delhi";
-  const bizPhone = businessDetails?.phoneNumber || "+91 99887 76655";
-  const bizEmail = businessDetails?.email || "billing@visionhealthcare.com";
-  const bizGstin = businessDetails?.gstin || "07GPYPS6223A1ZH";
-  const bizState = businessDetails?.state || "07-Delhi";
-  const bizWebsite = businessDetails?.website || "www.visionhealthcare.com";
-  const bizBankName =
-    businessDetails?.bankName || "Au Small Finance Bank Limited";
-  const bizBankBranch = businessDetails?.bankBranch || "Noida, Delhi NCR";
-  const bizBankAccountNo = businessDetails?.bankAccountNo || "2402210060989650";
-  const bizBankIfscCode = businessDetails?.bankIfscCode || "AUBL0002100";
-  const bizAccountHolderName =
-    businessDetails?.accountHolderName || "Vision Health Care Services";
+  const bizName = businessDetails?.name || "";
+  const bizAddress = businessDetails?.address || "";
+  const bizPhone = businessDetails?.phoneNumber || "";
+  const bizEmail = businessDetails?.email || "";
+  const bizGstin = businessDetails?.gstin || "";
+  const bizState = businessDetails?.state || "";
+  const bizWebsite = businessDetails?.website || "";
+  const bizBankName = businessDetails?.bankName || "";
+  const bizBankBranch = businessDetails?.bankBranch || "";
+  const bizBankAccountNo = businessDetails?.bankAccountNo || "";
+  const bizBankIfscCode = businessDetails?.bankIfscCode || "";
+  const bizAccountHolderName = businessDetails?.accountHolderName || "";
+  const bizSignatoryName = businessDetails?.signatoryName || "";
 
   // --- 1. HEADER SECTION ---
   // Clinic / Company Details (Left)
@@ -150,18 +148,24 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
     .text(`State: ${bizState}`, 40, 113);
 
   // Logo Placeholder (Right)
-  const logoRight = 500;
-  const logoTop = 45;
-  doc
-    .strokeColor(PRIMARY_RED)
-    .lineWidth(2)
-    .circle(logoRight + 25, logoTop + 25, 20)
-    .stroke();
-  doc
-    .fillColor(PRIMARY_RED)
-    .font("Helvetica-Bold")
-    .fontSize(16)
-    .text(bizName.trim().charAt(0).toUpperCase(), logoRight + 20, logoTop + 18);
+  if (bizName) {
+    const logoRight = 500;
+    const logoTop = 45;
+    doc
+      .strokeColor(PRIMARY_RED)
+      .lineWidth(2)
+      .circle(logoRight + 25, logoTop + 25, 20)
+      .stroke();
+    doc
+      .fillColor(PRIMARY_RED)
+      .font("Helvetica-Bold")
+      .fontSize(16)
+      .text(
+        bizName.trim().charAt(0).toUpperCase(),
+        logoRight + 20,
+        logoTop + 18,
+      );
+  }
 
   // Thin separator line
   doc
@@ -461,11 +465,16 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
     });
 
   // Stylized Handwritten font simulation for Signature!
-  doc
-    .fillColor("#1E3A8A") // Signature ink blue
-    .font("Courier-Oblique")
-    .fontSize(11)
-    .text("Dilip", 400, signatoryY + 18, { width: 150, align: "right" });
+  if (bizSignatoryName) {
+    doc
+      .fillColor("#1E3A8A") // Signature ink blue
+      .font("Courier-Oblique")
+      .fontSize(11)
+      .text(bizSignatoryName, 400, signatoryY + 18, {
+        width: 150,
+        align: "right",
+      });
+  }
 
   doc
     .moveTo(400, signatoryY + 30)
