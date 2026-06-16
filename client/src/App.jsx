@@ -15,6 +15,7 @@ export default function App() {
 
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Load auth state from localStorage on boot
   useEffect(() => {
@@ -53,17 +54,25 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="h-screen w-screen overflow-hidden bg-slate-50 flex">
       {/* SIDEBAR NAVIGATION */}
-      <Sidebar user={user} handleLogout={handleLogout} />
+      <Sidebar
+        user={user}
+        handleLogout={handleLogout}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       {/* MAIN LAYOUT CONTENT */}
       <div className="flex-grow flex flex-col min-w-0">
         {/* Top Header */}
-        <Header />
+        <Header
+          isOpen={isSidebarOpen}
+          onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
 
         {/* Main Routing Wrapper */}
-        <main className="flex-grow p-8 overflow-y-auto max-w-7xl w-full mx-auto">
+        <main className="flex-grow px-1.5 md:px-3 py-2 overflow-y-auto w-full mx-auto">
           <Routes>
             <Route
               path="/dashboard"

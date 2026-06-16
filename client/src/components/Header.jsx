@@ -1,7 +1,8 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
-export default function Header() {
+export default function Header({ isOpen, onMenuToggle }) {
   const location = useLocation();
 
   // Auto-resolve title from URL segment elegantly
@@ -30,19 +31,30 @@ export default function Header() {
   const currentTabName = getTabName();
 
   return (
-    <header className="h-16 bg-white border-b border-slate-100 px-8 flex justify-between items-center shrink-0">
-      <div>
-        <span className="text-xxs font-black text-slate-400 uppercase tracking-widest">
-          Workspace
-        </span>
-        <h2 className="text-xs font-black text-slate-700 uppercase tracking-wider">
-          {currentTabName} Hub
-        </h2>
+    <header className="h-14 bg-white border-b border-slate-100 px-1.5 md:px-3 flex justify-between items-center shrink-0">
+      <div className="flex items-center gap-3 md:gap-4">
+        {/* Mobile & Desktop menu toggle button */}
+        <button
+          onClick={onMenuToggle}
+          className="p-1.5 hover:bg-slate-50 text-slate-500 hover:text-slate-800 rounded-xl transition border border-slate-100"
+          aria-label="Toggle sidebar"
+        >
+          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
+        <div>
+          <span className="text-xxs font-black text-slate-400 uppercase tracking-widest">
+            Workspace
+          </span>
+          <h2 className="text-xs font-black text-slate-700 uppercase tracking-wider">
+            {currentTabName} Hub
+          </h2>
+        </div>
       </div>
 
       <div className="flex items-center gap-3 text-xs text-slate-500 font-bold">
         <span className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
-        <span>Connection Secure (Cloud DB)</span>
+        <span className="hidden sm:inline">Connection Secure (Cloud DB)</span>
       </div>
     </header>
   );

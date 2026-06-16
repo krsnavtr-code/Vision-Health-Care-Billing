@@ -12,7 +12,7 @@ import {
   Settings,
 } from "lucide-react";
 
-export default function Sidebar({ user, handleLogout }) {
+export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
   const location = useLocation();
 
   // Navigation Items Mapping
@@ -33,68 +33,123 @@ export default function Sidebar({ user, handleLogout }) {
   }
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-300 border-r border-slate-800 flex flex-col shrink-0">
-      {/* Brand Header */}
-      <div className="p-6 border-b border-slate-800 flex items-center gap-2.5">
-        <div className="p-1.5 bg-blue-600 rounded-lg text-white">
-          <Activity className="h-5 w-5 animate-pulse" />
-        </div>
-        <div>
-          <h2 className="font-black text-white text-sm tracking-wider">
-            VISION HEALTH
-          </h2>
-          <p className="text-xxs text-slate-500 font-bold uppercase tracking-widest">
-            Enterprise ERP
-          </p>
-        </div>
-      </div>
+    <>
+      {/* MOBILE BACKDROP OVERLAY */}
+      <div
+        className={`fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${
+          isOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+        onClick={onClose}
+      />
 
-      {/* Navigation lists */}
-      <nav className="flex-grow p-4 space-y-1">
-        {menuItems.map((item) => {
-          const IconComponent = item.icon;
-          const isActive = location.pathname === item.path;
-          return (
-            <Link
-              key={item.name}
-              to={item.path}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide transition duration-150 ${
-                isActive
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
-                  : "hover:bg-slate-800/60 hover:text-white text-slate-400"
-              }`}
-            >
-              <IconComponent className="h-4 w-4" />
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* User Account / Footer */}
-      <div className="p-4 border-t border-slate-800 space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-slate-800 rounded-full text-slate-300">
-            <UserIcon className="h-4 w-4" />
-          </div>
-          <div className="min-w-0 flex-grow">
-            <h4 className="text-xs font-black text-white truncate leading-tight">
-              {user.name}
-            </h4>
-            <p className="text-xxs text-blue-400 font-bold uppercase tracking-wide mt-0.5">
-              {user.role}
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-rose-950 hover:text-rose-400 rounded-xl text-xs font-bold text-slate-400 transition"
+      {/* SIDEBAR ASIDE DRAWER */}
+      <aside
+        className={`fixed inset-y-0 left-0 bg-slate-900 text-slate-300 border-r border-slate-800 flex flex-col shrink-0 z-50 transform transition-all duration-300 ease-in-out h-full md:static md:translate-x-0 ${
+          isOpen
+            ? "w-52 translate-x-0 md:ml-0"
+            : "-translate-x-full md:w-14 md:translate-x-0"
+        }`}
+      >
+        {/* Brand Header */}
+        <div
+          className={`p-2 border-b border-slate-800 flex items-center gap-2.5 transition-all duration-300 ${!isOpen ? "md:justify-center md:px-0" : ""}`}
         >
-          <LogOut className="h-3.5 w-3.5" />
-          Sign Out
-        </button>
-      </div>
-    </aside>
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 bg-blue-600 rounded-lg text-white shrink-0">
+              <Activity className="h-5 w-5 animate-pulse" />
+            </div>
+            <div
+              className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
+            >
+              <h2 className="font-black text-white text-sm tracking-wider whitespace-nowrap">
+                VISION HEALTH
+              </h2>
+              <p className="text-xxs text-slate-500 font-bold uppercase tracking-widest whitespace-nowrap">
+                Enterprise ERP
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation lists */}
+        <nav className="flex-grow p-2 space-y-1 overflow-y-auto scrollbar-none">
+          {menuItems.map((item) => {
+            const IconComponent = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.name}
+                to={item.path}
+                onClick={() => {
+                  if (window.innerWidth < 768) {
+                    onClose();
+                  }
+                }}
+                title={!isOpen ? item.name : undefined}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all duration-150 ${
+                  !isOpen
+                    ? "md:justify-center md:px-0 md:h-10 md:w-10 md:mx-auto"
+                    : ""
+                } ${
+                  isActive
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
+                    : "hover:bg-slate-800/60 hover:text-white text-slate-400"
+                }`}
+              >
+                <IconComponent className="h-4 w-4 shrink-0" />
+                <span
+                  className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
+                >
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User Account / Footer */}
+        <div
+          className={`p-2 border-t border-slate-800 space-y-3 transition-all duration-300 ${!isOpen ? "md:px-2" : ""}`}
+        >
+          <div
+            className={`flex items-center gap-3 transition-all duration-300 ${!isOpen ? "md:justify-center" : ""}`}
+          >
+            <div
+              className="p-2 bg-slate-800 rounded-full text-slate-300 shrink-0"
+              title={`${user.name} (${user.role})`}
+            >
+              <UserIcon className="h-4 w-4" />
+            </div>
+            <div
+              className={`min-w-0 flex-grow transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
+            >
+              <h4 className="text-xs font-black text-white truncate leading-tight whitespace-nowrap">
+                {user.name}
+              </h4>
+              <p className="text-xxs text-blue-400 font-bold uppercase tracking-wide mt-0.5 whitespace-nowrap">
+                {user.role}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            title={!isOpen ? "Sign Out" : undefined}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-rose-950 hover:text-rose-400 rounded-xl text-xs font-bold text-slate-400 transition-all duration-150 ${
+              !isOpen ? "md:h-10 md:w-10 md:p-0 md:mx-auto" : ""
+            }`}
+          >
+            <LogOut className="h-3.5 w-3.5 shrink-0" />
+            <span
+              className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
+            >
+              Sign Out
+            </span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
