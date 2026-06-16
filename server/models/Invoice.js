@@ -140,11 +140,11 @@ const invoiceSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-// Pre-save hook to calculate and update balance & paymentStatus automatically
-invoiceSchema.pre("save", function (next) {
+// Pre-validate hook to calculate and update balance & paymentStatus automatically
+invoiceSchema.pre("validate", function () {
   // Recalculate subTotal, taxAmount, and grandTotal from items for accuracy
   let computedSubTotal = 0;
   let computedTaxAmount = 0;
@@ -154,9 +154,11 @@ invoiceSchema.pre("save", function (next) {
     // 1. Calculate Tax Amount
     const baseAmount = item.unitPrice * item.quantity;
     item.taxAmount = parseFloat((baseAmount * (item.gstRate / 100)).toFixed(2));
-    
+
     // 2. Calculate Total Price for the item
-    item.totalPrice = parseFloat((baseAmount + item.taxAmount - item.discount).toFixed(2));
+    item.totalPrice = parseFloat(
+      (baseAmount + item.taxAmount - item.discount).toFixed(2),
+    );
 
     computedSubTotal += baseAmount;
     computedTaxAmount += item.taxAmount;
@@ -166,7 +168,9 @@ invoiceSchema.pre("save", function (next) {
   this.subTotal = parseFloat(computedSubTotal.toFixed(2));
   this.taxAmount = parseFloat(computedTaxAmount.toFixed(2));
   this.totalDiscount = parseFloat(computedTotalDiscount.toFixed(2));
-  this.grandTotal = parseFloat((this.subTotal + this.taxAmount - this.totalDiscount).toFixed(2));
+  this.grandTotal = parseFloat(
+    (this.subTotal + this.taxAmount - this.totalDiscount).toFixed(2),
+  );
 
   // 3. Compute balance
   this.balance = parseFloat((this.grandTotal - this.amountPaid).toFixed(2));
@@ -180,8 +184,6 @@ invoiceSchema.pre("save", function (next) {
   } else {
     this.paymentStatus = "Partially Paid";
   }
-
-  next();
 });
 
 export default mongoose.model("Invoice", invoiceSchema);

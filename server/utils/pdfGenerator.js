@@ -97,9 +97,10 @@ const numberToWords = (num) => {
 /**
  * Generates a professional Vyapar-style PDF Invoice and streams it to the response
  * @param {Object} invoice - Populated Invoice object from MongoDB
+ * @param {Object} businessDetails - BusinessDetails configuration document from MongoDB
  * @param {Object} res - Express Response object
  */
-const generateInvoicePDF = (invoice, res) => {
+const generateInvoicePDF = (invoice, businessDetails, res) => {
   // Create PDF Document with standard A4 margins
   const doc = new PDFDocument({ size: "A4", margin: 40 });
 
@@ -113,23 +114,40 @@ const generateInvoicePDF = (invoice, res) => {
   const BG_LIGHT = "#F8FAFC"; // Cool Light grey
   const BORDER_COLOR = "#CBD5E1"; // Borders grey
 
+  // Extract dynamic details with defaults
+  const bizName =
+    businessDetails?.name || "Vision Health Care and Home Care Services";
+  const bizAddress = businessDetails?.address || "Sector 62, Noida, NCR Delhi";
+  const bizPhone = businessDetails?.phoneNumber || "+91 99887 76655";
+  const bizEmail = businessDetails?.email || "billing@visionhealthcare.com";
+  const bizGstin = businessDetails?.gstin || "07GPYPS6223A1ZH";
+  const bizState = businessDetails?.state || "07-Delhi";
+  const bizWebsite = businessDetails?.website || "www.visionhealthcare.com";
+  const bizBankName =
+    businessDetails?.bankName || "Au Small Finance Bank Limited";
+  const bizBankBranch = businessDetails?.bankBranch || "Noida, Delhi NCR";
+  const bizBankAccountNo = businessDetails?.bankAccountNo || "2402210060989650";
+  const bizBankIfscCode = businessDetails?.bankIfscCode || "AUBL0002100";
+  const bizAccountHolderName =
+    businessDetails?.accountHolderName || "Vision Health Care Services";
+
   // --- 1. HEADER SECTION ---
   // Clinic / Company Details (Left)
   doc
     .fillColor(PRIMARY_RED)
     .font("Helvetica-Bold")
     .fontSize(18)
-    .text("Vision Health Care and Home Care Services", 40, 45);
+    .text(bizName, 40, 45);
 
   doc
     .fillColor(TEXT_DARK)
     .font("Helvetica")
     .fontSize(8.5)
-    .text("Sector 62, Noida, NCR Delhi", 40, 65)
-    .text("Phone no.: +91 99887 76655", 40, 77)
-    .text("Email: billing@visionhealthcare.com", 40, 89)
-    .text("GSTIN: 07GPYPS6223A1ZH", 40, 101)
-    .text("State: 07-Delhi", 40, 113);
+    .text(bizAddress, 40, 65)
+    .text(`Phone no.: ${bizPhone}`, 40, 77)
+    .text(`Email: ${bizEmail}`, 40, 89)
+    .text(`GSTIN: ${bizGstin}`, 40, 101)
+    .text(`State: ${bizState}`, 40, 113);
 
   // Logo Placeholder (Right)
   const logoRight = 500;
@@ -143,7 +161,7 @@ const generateInvoicePDF = (invoice, res) => {
     .fillColor(PRIMARY_RED)
     .font("Helvetica-Bold")
     .fontSize(16)
-    .text("V", logoRight + 20, logoTop + 18);
+    .text(bizName.trim().charAt(0).toUpperCase(), logoRight + 20, logoTop + 18);
 
   // Thin separator line
   doc
@@ -373,10 +391,10 @@ const generateInvoicePDF = (invoice, res) => {
     .text("Pay To:", 95, payToY + 6)
     .font("Helvetica")
     .fontSize(6.5)
-    .text("Bank: Au Small Finance Bank Limited, Noida", 95, payToY + 16)
-    .text("Account No.: 2402210060989650", 95, payToY + 26)
-    .text("IFSC Code: AUBL0002100", 95, payToY + 36)
-    .text("Holder: Vision Health Care Services", 95, payToY + 46);
+    .text(`Bank: ${bizBankName}, ${bizBankBranch}`, 95, payToY + 16)
+    .text(`Account No.: ${bizBankAccountNo}`, 95, payToY + 26)
+    .text(`IFSC Code: ${bizBankIfscCode}`, 95, payToY + 36)
+    .text(`Holder: ${bizAccountHolderName}`, 95, payToY + 46);
 
   // UPI scan badge
   doc.rect(46, payToY + 55, 110, 12).fill("#0284C7");
@@ -390,7 +408,7 @@ const generateInvoicePDF = (invoice, res) => {
     .fillColor(TEXT_MUTED)
     .font("Helvetica")
     .fontSize(6)
-    .text("www.visionhealthcare.com", 46, payToY + 74, { width: 218 });
+    .text(bizWebsite, 46, payToY + 74, { width: 218 });
 
   // Right Section (Summary breakdown and totals)
   const calcX = 350;
@@ -437,7 +455,7 @@ const generateInvoicePDF = (invoice, res) => {
     .fillColor(TEXT_DARK)
     .font("Helvetica")
     .fontSize(7.5)
-    .text("For : Vision Health Care and Home Care Services", 330, signatoryY, {
+    .text(`For : ${bizName}`, 330, signatoryY, {
       width: 220,
       align: "right",
     });

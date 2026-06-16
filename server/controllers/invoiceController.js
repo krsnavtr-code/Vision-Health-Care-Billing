@@ -2,6 +2,7 @@ import Invoice from "../models/Invoice.js";
 import Inventory from "../models/Inventory.js";
 import Equipment from "../models/Equipment.js";
 import User from "../models/User.js";
+import BusinessDetails from "../models/BusinessDetails.js";
 import { generateInvoicePDF } from "../utils/pdfGenerator.js";
 
 // @desc    Generate a new invoice (The Billing Engine)
@@ -18,12 +19,10 @@ const generateInvoice = async (req, res) => {
         .json({ success: false, message: "Patient ID is required" });
     }
     if (!items || !Array.isArray(items) || items.length === 0) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invoice must contain at least one item",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Invoice must contain at least one item",
+      });
     }
 
     // Verify Patient exists
@@ -57,12 +56,10 @@ const generateInvoice = async (req, res) => {
         }
         const med = await Inventory.findById(itemId);
         if (!med) {
-          return res
-            .status(404)
-            .json({
-              success: false,
-              message: `Medicine not found for ID: ${itemId}`,
-            });
+          return res.status(404).json({
+            success: false,
+            message: `Medicine not found for ID: ${itemId}`,
+          });
         }
 
         // Check and update stock
@@ -95,12 +92,10 @@ const generateInvoice = async (req, res) => {
         }
         const eq = await Equipment.findById(itemId);
         if (!eq) {
-          return res
-            .status(404)
-            .json({
-              success: false,
-              message: `Equipment not found for ID: ${itemId}`,
-            });
+          return res.status(404).json({
+            success: false,
+            message: `Equipment not found for ID: ${itemId}`,
+          });
         }
 
         const rateType = rentalRateType || "Daily";
@@ -256,6 +251,9 @@ const downloadInvoicePDF = async (req, res) => {
         .json({ success: false, message: "Invoice not found" });
     }
 
+    // Fetch dynamic business details from DB
+    const businessDetails = await BusinessDetails.findOne();
+
     // Set response headers
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
@@ -263,16 +261,11 @@ const downloadInvoicePDF = async (req, res) => {
       `attachment; filename=${invoice.invoiceNumber}.pdf`,
     );
 
-    generateInvoicePDF(invoice, res);
+    generateInvoicePDF(invoice, businessDetails, res);
   } catch (error) {
     console.error("Download PDF Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export {
-  generateInvoice,
-  getInvoices,
-  getInvoiceById,
-  downloadInvoicePDF,
-};
+export { generateInvoice, getInvoices, getInvoiceById, downloadInvoicePDF };

@@ -5,6 +5,7 @@ import Inventory from "./components/Inventory";
 import Equipment from "./components/Equipment";
 import Patients from "./components/Patients";
 import POS from "./components/POS";
+import BusinessSettings from "./components/BusinessSettings";
 import {
   Activity,
   LayoutDashboard,
@@ -14,6 +15,7 @@ import {
   Users,
   LogOut,
   User as UserIcon,
+  Settings,
 } from "lucide-react";
 
 export default function App() {
@@ -65,6 +67,10 @@ export default function App() {
     { name: "Equipment Rentals", icon: Layers },
     { name: "Patients", icon: Users },
   ];
+
+  if (user && (user.role === "Admin" || user.role === "Manager")) {
+    menuItems.push({ name: "Business Settings", icon: Settings });
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -161,6 +167,7 @@ export default function App() {
           {activeTab === "Inventory" && <Inventory />}
           {activeTab === "Equipment Rentals" && <Equipment />}
           {activeTab === "Patients" && <Patients />}
+          {activeTab === "Business Settings" && <BusinessSettings />}
         </main>
       </div>
     </div>
