@@ -108,16 +108,10 @@ export default function BusinessSettings() {
       setError("");
       setSuccess(false);
 
-      console.log("Submitting details:", details);
-      console.log("Signature image length:", details.signatureImage?.length);
-      console.log("QR code length:", details.qrCode?.length);
-
       const response = await apiCall("/business-details", {
         method: "PUT",
         body: JSON.stringify(details),
       });
-
-      console.log("Response:", response);
 
       if (response && response.success && response.data) {
         setDetails((prev) => ({

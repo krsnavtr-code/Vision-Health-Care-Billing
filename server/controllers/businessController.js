@@ -27,15 +27,6 @@ const getBusinessDetails = async (req, res) => {
 // @access  Private (Admin only)
 const updateBusinessDetails = async (req, res) => {
   try {
-    console.log("Received body:", req.body);
-    console.log(
-      "Signature image in body:",
-      req.body.signatureImage ? "Present" : "Missing",
-    );
-    console.log("QR code in body:", req.body.qrCode ? "Present" : "Missing");
-    console.log("Signature image length:", req.body.signatureImage?.length);
-    console.log("QR code length:", req.body.qrCode?.length);
-
     let details = await BusinessDetails.findOne();
     if (!details) {
       details = await BusinessDetails.create(req.body);
@@ -48,15 +39,6 @@ const updateBusinessDetails = async (req, res) => {
 
     // Clean up any extra duplicate documents if they exist
     await BusinessDetails.deleteMany({ _id: { $ne: details._id } });
-
-    console.log(
-      "Saved details signatureImage:",
-      details.signatureImage ? "Present" : "Missing",
-    );
-    console.log(
-      "Saved details qrCode:",
-      details.qrCode ? "Present" : "Missing",
-    );
 
     res.json({
       success: true,
