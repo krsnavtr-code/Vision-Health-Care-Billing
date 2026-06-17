@@ -48,20 +48,18 @@ export default function POS() {
   };
 
   const performSearch = async () => {
-    if (!searchQuery.trim()) {
-      setSearchResults([]);
-      return;
-    }
     try {
       if (searchCategory === "Medicine") {
-        const res = await apiCall(
-          `/inventory?search=${encodeURIComponent(searchQuery)}`,
-        );
+        const endpoint = searchQuery.trim()
+          ? `/inventory?search=${encodeURIComponent(searchQuery)}`
+          : `/inventory`;
+        const res = await apiCall(endpoint);
         if (res.success) setSearchResults(res.data);
       } else if (searchCategory === "Rental") {
-        const res = await apiCall(
-          `/equipment?search=${encodeURIComponent(searchQuery)}`,
-        );
+        const endpoint = searchQuery.trim()
+          ? `/equipment?search=${encodeURIComponent(searchQuery)}`
+          : `/equipment`;
+        const res = await apiCall(endpoint);
         if (res.success) {
           // Only show available equipment
           setSearchResults(res.data.filter((eq) => eq.status === "Available"));
@@ -320,8 +318,8 @@ export default function POS() {
           {/* Category Tabs */}
           <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
             {[
-              { id: "Medicine", label: "💊 Medicine", icon: "💊" },
               { id: "Rental", label: "🏥 Equipment", icon: "🏥" },
+              { id: "Medicine", label: "💊 Medicine", icon: "💊" },
               { id: "Service", label: "⚡ Services", icon: "⚡" },
             ].map((cat) => (
               <button
