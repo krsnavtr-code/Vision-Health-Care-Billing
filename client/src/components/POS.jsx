@@ -32,6 +32,7 @@ export default function POS() {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [notes, setNotes] = useState("");
+  const [enableGst, setEnableGst] = useState(false);
 
   // Post-submit success model state
   const [generatedInvoice, setGeneratedInvoice] = useState(null);
@@ -98,7 +99,8 @@ export default function POS() {
       itemId: item._id,
       itemType: type,
       name: type === "Medicine" ? item.itemName : item.equipmentName,
-      unitPrice: type === "Medicine" ? item.basePrice : item.dailyRentalPrice, // default Daily rent for equipment
+      unitPrice:
+        type === "Medicine" ? item.basePrice : item.dailyRentalPrice * 1, // default Daily rent * 1 day for equipment
       gstRate: type === "Medicine" ? item.gstRate : 18,
       quantity: 1,
       discount: 0,
@@ -152,14 +154,18 @@ export default function POS() {
       if (item.id === id) {
         let updatedItem = { ...item, [field]: value };
 
-        // Handle price changes based on daily/monthly rental type selection
-        if (field === "rentalRateType") {
+        // Handle price changes based on daily/monthly rental type selection or rental days
+        if (field === "rentalRateType" || field === "rentalDays") {
           const original = item.originalItem;
-          if (original) {
-            updatedItem.unitPrice =
-              value === "Monthly"
+          if (original && item.itemType === "Rental") {
+            const days = field === "rentalDays" ? value : item.rentalDays;
+            const rateType =
+              field === "rentalRateType" ? value : item.rentalRateType;
+            const pricePerUnit =
+              rateType === "Monthly"
                 ? original.monthlyRentalPrice
                 : original.dailyRentalPrice;
+            updatedItem.unitPrice = pricePerUnit * days;
           }
         }
 
@@ -181,10 +187,9 @@ export default function POS() {
     let totalDiscount = 0;
 
     cart.forEach((item) => {
+      // Calculate base price: unitPrice * quantity
+      // For rentals, unitPrice should already include the rental period (daily * days)
       let basePrice = item.unitPrice * item.quantity;
-      if (item.itemType === "Rental" && item.rentalDays) {
-        basePrice = item.unitPrice * item.rentalDays * item.quantity;
-      }
 
       // calculate item discount
       let itemDisc = 0;
@@ -194,10 +199,13 @@ export default function POS() {
         itemDisc = parseFloat(item.discount || 0);
       }
 
-      const itemTax = basePrice * (item.gstRate / 100);
+      // Only calculate tax if GST is enabled
+      if (enableGst) {
+        const itemTax = basePrice * (item.gstRate / 100);
+        taxAmount += itemTax;
+      }
 
       subTotal += basePrice;
-      taxAmount += itemTax;
       totalDiscount += itemDisc;
     });
 
@@ -213,7 +221,10 @@ export default function POS() {
     };
   };
 
-  const summary = calculateCartSummary();
+  const summary = React.useMemo(
+    () => calculateCartSummary(),
+    [cart, amountPaid, enableGst],
+  );
 
   const handleGenerateInvoice = async () => {
     if (!selectedPatientId) {
@@ -251,7 +262,7 @@ export default function POS() {
         name: item.name,
         quantity: item.quantity,
         unitPrice: item.unitPrice,
-        gstRate: item.gstRate,
+        gstRate: enableGst ? item.gstRate : 0,
         discount: finalDiscVal,
         rentalDays: item.rentalDays,
         rentalRateType: item.rentalRateType,
@@ -734,18 +745,39 @@ export default function POS() {
           )}
 
           <div className="bg-white rounded-xl p-4 space-y-3 shadow-sm">
+            {/* GST Toggle */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-sm font-bold text-slate-700">
+                Enable GST Tax
+              </span>
+              <button
+                onClick={() => setEnableGst(!enableGst)}
+                className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
+                  enableGst ? "bg-emerald-500" : "bg-slate-300"
+                }`}
+              >
+                <span
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${
+                    enableGst ? "translate-x-6" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+
             <div className="flex justify-between text-sm text-slate-600 font-medium">
               <span>Sub Total</span>
               <span className="font-bold text-slate-800">
                 ₹{summary.subTotal.toFixed(2)}
               </span>
             </div>
-            <div className="flex justify-between text-sm text-slate-600 font-medium">
-              <span>GST Tax</span>
-              <span className="font-bold text-slate-800">
-                ₹{summary.taxAmount.toFixed(2)}
-              </span>
-            </div>
+            {enableGst && (
+              <div className="flex justify-between text-sm text-slate-600 font-medium">
+                <span>GST Tax</span>
+                <span className="font-bold text-slate-800">
+                  ₹{summary.taxAmount.toFixed(2)}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between text-sm text-rose-600 font-bold">
               <span>Discount</span>
               <span>- ₹{summary.totalDiscount.toFixed(2)}</span>
@@ -897,7 +929,7 @@ export default function POS() {
                 className="flex-grow flex justify-center items-center gap-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow transition duration-150"
               >
                 <Printer className="h-4 w-4" />
-                Print / Save Vyapar PDF
+                Print / Save Bill PDF
               </button>
               <button
                 onClick={() => setShowSuccessModal(false)}

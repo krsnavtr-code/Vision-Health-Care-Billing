@@ -81,7 +81,8 @@ const generateInvoice = async (req, res) => {
           name: med.itemName,
           quantity: itemQty,
           unitPrice: med.basePrice,
-          gstRate: med.gstRate,
+          gstRate:
+            item.gstRate !== undefined ? parseFloat(item.gstRate) : med.gstRate,
           discount: itemDisc,
         });
       } else if (itemType === "Rental") {
@@ -117,7 +118,7 @@ const generateInvoice = async (req, res) => {
           name: `${eq.equipmentName} (${rentalPeriod} ${rateType === "Monthly" ? "Month(s)" : "Day(s)"})`,
           quantity: itemQty,
           unitPrice: totalRentalPrice,
-          gstRate: 18, // Standard 18% GST for services/rentals
+          gstRate: item.gstRate !== undefined ? parseFloat(item.gstRate) : 18,
           discount: itemDisc,
           rentalDays: rentalPeriod,
           rentalRateType: rateType,
