@@ -22,11 +22,6 @@ const businessDetailsSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
-    gstin: {
-      type: String,
-      default: "",
-      trim: true,
-    },
     state: {
       type: String,
       default: "",
@@ -62,10 +57,13 @@ const businessDetailsSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
-    signatoryName: {
+    signatureImage: {
       type: String,
       default: "",
-      trim: true,
+    },
+    qrCode: {
+      type: String,
+      default: "",
     },
   },
   {

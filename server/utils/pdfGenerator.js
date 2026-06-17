@@ -119,7 +119,6 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
   const bizAddress = businessDetails?.address || "";
   const bizPhone = businessDetails?.phoneNumber || "";
   const bizEmail = businessDetails?.email || "";
-  const bizGstin = businessDetails?.gstin || "";
   const bizState = businessDetails?.state || "";
   const bizWebsite = businessDetails?.website || "";
   const bizBankName = businessDetails?.bankName || "";
@@ -127,7 +126,8 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
   const bizBankAccountNo = businessDetails?.bankAccountNo || "";
   const bizBankIfscCode = businessDetails?.bankIfscCode || "";
   const bizAccountHolderName = businessDetails?.accountHolderName || "";
-  const bizSignatoryName = businessDetails?.signatoryName || "";
+  const bizSignatureImage = businessDetails?.signatureImage || "";
+  const bizQrCode = businessDetails?.qrCode || "";
 
   // --- 1. HEADER SECTION ---
   // Clinic / Company Details (Left)
@@ -144,8 +144,7 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
     .text(bizAddress, 40, 65)
     .text(`Phone no.: ${bizPhone}`, 40, 77)
     .text(`Email: ${bizEmail}`, 40, 89)
-    .text(`GSTIN: ${bizGstin}`, 40, 101)
-    .text(`State: ${bizState}`, 40, 113);
+    .text(`State: ${bizState}`, 40, 101);
 
   // Logo Placeholder (Right)
   if (bizName) {
@@ -371,21 +370,31 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
     .rect(40, payToY, 230, 92)
     .stroke();
 
-  // Draw QR code mock drawing lines inside box
-  doc
-    .strokeColor(TEXT_DARK)
-    .lineWidth(1)
-    .rect(46, payToY + 6, 40, 40)
-    .stroke();
-  doc
-    .rect(52, payToY + 12, 10, 10)
-    .fill(TEXT_DARK)
-    .rect(70, payToY + 12, 10, 10)
-    .fill(TEXT_DARK)
-    .rect(52, payToY + 30, 10, 10)
-    .fill(TEXT_DARK)
-    .rect(72, payToY + 32, 6, 6)
-    .fill(TEXT_DARK);
+  // Draw QR code - use uploaded image if available, otherwise fallback to mock
+  if (bizQrCode) {
+    const base64Data = bizQrCode.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64Data, "base64");
+    doc.image(buffer, 46, payToY + 6, {
+      width: 40,
+      height: 40,
+    });
+  } else {
+    // Draw QR code mock drawing lines inside box
+    doc
+      .strokeColor(TEXT_DARK)
+      .lineWidth(1)
+      .rect(46, payToY + 6, 40, 40)
+      .stroke();
+    doc
+      .rect(52, payToY + 12, 10, 10)
+      .fill(TEXT_DARK)
+      .rect(70, payToY + 12, 10, 10)
+      .fill(TEXT_DARK)
+      .rect(52, payToY + 30, 10, 10)
+      .fill(TEXT_DARK)
+      .rect(72, payToY + 32, 6, 6)
+      .fill(TEXT_DARK);
+  }
 
   // Bank / Pay details
   doc
@@ -464,16 +473,19 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
       align: "right",
     });
 
-  // Stylized Handwritten font simulation for Signature!
-  if (bizSignatoryName) {
-    doc
-      .fillColor("#1E3A8A") // Signature ink blue
-      .font("Courier-Oblique")
-      .fontSize(11)
-      .text(bizSignatoryName, 400, signatoryY + 18, {
-        width: 150,
-        align: "right",
-      });
+  // Signature - use image if available
+  if (bizSignatureImage) {
+    // Remove data URL prefix if present
+    const base64Data = bizSignatureImage.replace(
+      /^data:image\/\w+;base64,/,
+      "",
+    );
+    const buffer = Buffer.from(base64Data, "base64");
+    doc.image(buffer, 420, signatoryY + 12, {
+      width: 120,
+      height: 40,
+      align: "right",
+    });
   }
 
   doc

@@ -13,6 +13,8 @@ import {
   CreditCard,
   Sparkles,
   RefreshCw,
+  Upload,
+  X,
 } from "lucide-react";
 
 export default function BusinessSettings() {
@@ -21,7 +23,6 @@ export default function BusinessSettings() {
     address: "",
     phoneNumber: "",
     email: "",
-    gstin: "",
     state: "",
     website: "",
     bankName: "",
@@ -29,7 +30,8 @@ export default function BusinessSettings() {
     bankAccountNo: "",
     bankIfscCode: "",
     accountHolderName: "",
-    signatoryName: "",
+    signatureImage: "",
+    qrCode: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -47,8 +49,11 @@ export default function BusinessSettings() {
       setLoading(true);
       setError("");
       const response = await apiCall("/business-details");
-      if (response && response.success) {
-        setDetails(response.data);
+      if (response && response.success && response.data) {
+        setDetails((prev) => ({
+          ...prev,
+          ...response.data,
+        }));
       } else {
         setError("Failed to load business settings");
       }
@@ -68,6 +73,34 @@ export default function BusinessSettings() {
     }));
   };
 
+  const handleSignatureUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDetails((prev) => ({
+          ...prev,
+          signatureImage: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleQrCodeUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDetails((prev) => ({
+          ...prev,
+          qrCode: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -75,10 +108,22 @@ export default function BusinessSettings() {
       setError("");
       setSuccess(false);
 
-      const response = await apiCall("/business-details", "PUT", details);
+      console.log("Submitting details:", details);
+      console.log("Signature image length:", details.signatureImage?.length);
+      console.log("QR code length:", details.qrCode?.length);
 
-      if (response && response.success) {
-        setDetails(response.data);
+      const response = await apiCall("/business-details", {
+        method: "PUT",
+        body: JSON.stringify(details),
+      });
+
+      console.log("Response:", response);
+
+      if (response && response.success && response.data) {
+        setDetails((prev) => ({
+          ...prev,
+          ...response.data,
+        }));
         setSuccess(true);
         setTimeout(() => setSuccess(false), 4000); // clear success badge after 4s
       } else {
@@ -248,26 +293,12 @@ export default function BusinessSettings() {
                     Tax & Registration Details
                   </h3>
                   <p className="text-xxs text-slate-400 font-medium">
-                    GST registration number and corporate registration states.
+                    Corporate registration state and website details.
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
-                    GSTIN Number
-                  </label>
-                  <input
-                    type="text"
-                    name="gstin"
-                    value={details.gstin}
-                    onChange={handleChange}
-                    placeholder="e.g. 07GPYPS6223A1ZH"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
-                  />
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
                     State & Code
@@ -393,16 +424,104 @@ export default function BusinessSettings() {
 
                 <div className="space-y-1.5">
                   <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
-                    Authorized Signatory Name (on Bill)
+                    Signature Image (Transparent PNG)
                   </label>
-                  <input
-                    type="text"
-                    name="signatoryName"
-                    value={details.signatoryName}
-                    onChange={handleChange}
-                    placeholder="e.g. Dilip"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 rounded-xl text-xs font-semibold text-slate-700 outline-none transition"
-                  />
+                  <div className="space-y-2">
+                    {details.signatureImage ? (
+                      <div className="relative inline-block">
+                        <img
+                          src={details.signatureImage}
+                          alt="Signature"
+                          className="h-16 max-w-xs object-contain bg-slate-50 rounded-lg border border-slate-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDetails((prev) => ({
+                              ...prev,
+                              signatureImage: "",
+                            }))
+                          }
+                          className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <input
+                          type="file"
+                          id="signature-upload"
+                          accept="image/png,image/jpeg"
+                          onChange={handleSignatureUpload}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor="signature-upload"
+                          className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl cursor-pointer transition"
+                        >
+                          <Upload className="h-4 w-4 text-slate-400" />
+                          <span className="text-xs font-semibold text-slate-500">
+                            Upload signature image
+                          </span>
+                        </label>
+                      </div>
+                    )}
+                    <p className="text-xxs text-slate-400">
+                      Upload a transparent PNG signature for invoices
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xxs font-black text-slate-500 uppercase tracking-wider">
+                    QR Code (Payment)
+                  </label>
+                  <div className="space-y-2">
+                    {details.qrCode ? (
+                      <div className="relative inline-block">
+                        <img
+                          src={details.qrCode}
+                          alt="QR Code"
+                          className="h-24 max-w-xs object-contain bg-slate-50 rounded-lg border border-slate-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDetails((prev) => ({
+                              ...prev,
+                              qrCode: "",
+                            }))
+                          }
+                          className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <input
+                          type="file"
+                          id="qr-upload"
+                          accept="image/png,image/jpeg"
+                          onChange={handleQrCodeUpload}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor="qr-upload"
+                          className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl cursor-pointer transition"
+                        >
+                          <Upload className="h-4 w-4 text-slate-400" />
+                          <span className="text-xs font-semibold text-slate-500">
+                            Upload QR code image
+                          </span>
+                        </label>
+                      </div>
+                    )}
+                    <p className="text-xxs text-slate-400">
+                      Upload QR code for payment on invoices
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
