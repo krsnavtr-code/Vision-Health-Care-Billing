@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { apiCall } from "../utils/api";
-import { Plus, Search, Edit2, Trash2, X, RefreshCw, Eye, CornerDownLeft, ShieldAlert } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  X,
+  RefreshCw,
+  Eye,
+  CornerDownLeft,
+  ShieldAlert,
+} from "lucide-react";
 
 export default function Equipment() {
   const [equipments, setEquipments] = useState([]);
@@ -32,9 +42,11 @@ export default function Equipment() {
     try {
       let queryStr = [];
       if (search) queryStr.push(`search=${encodeURIComponent(search)}`);
-      if (statusFilter) queryStr.push(`status=${encodeURIComponent(statusFilter)}`);
-      
-      const endpoint = queryStr.length > 0 ? `/equipment?${queryStr.join("&")}` : "/equipment";
+      if (statusFilter)
+        queryStr.push(`status=${encodeURIComponent(statusFilter)}`);
+
+      const endpoint =
+        queryStr.length > 0 ? `/equipment?${queryStr.join("&")}` : "/equipment";
       const res = await apiCall(endpoint);
       if (res.success) {
         setEquipments(res.data);
@@ -56,7 +68,9 @@ export default function Equipment() {
       // Wait, we can fetch all users and filter role === Patient if authorized, or fetch from /auth route.
       // Since /auth/profile is private, let's create a Patient Management screen too where we keep a list of patients!
       // For now, let's query patients using localStorage or fetch them.
-      const storedPatients = JSON.parse(localStorage.getItem("demo_patients") || "[]");
+      const storedPatients = JSON.parse(
+        localStorage.getItem("demo_patients") || "[]",
+      );
       setPatients(storedPatients);
     } catch (err) {
       console.log("Error loading patients:", err);
@@ -150,7 +164,8 @@ export default function Equipment() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this equipment?")) return;
+    if (!window.confirm("Are you sure you want to delete this equipment?"))
+      return;
     try {
       await apiCall(`/equipment/${id}`, { method: "DELETE" });
       fetchEquipments();
@@ -179,7 +194,12 @@ export default function Equipment() {
   };
 
   const handleReturn = async (id) => {
-    if (!window.confirm("Are you sure you want to return this equipment to Available status?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to return this equipment to Available status?",
+      )
+    )
+      return;
     try {
       await apiCall(`/equipment/${id}/return`, { method: "POST" });
       fetchEquipments();
@@ -189,42 +209,46 @@ export default function Equipment() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-black text-slate-800 tracking-tight">ICU Equipment Rental</h1>
-          <p className="text-sm text-slate-500 font-medium">Manage ICU beds, oxygen concentrators, and medical devices</p>
+          <h1 className="text-lg font-black text-slate-800 tracking-tight">
+            ICU Equipment Rental
+          </h1>
+          <p className="text-xs text-slate-500 font-medium">
+            Manage ICU beds, oxygen concentrators, and medical devices
+          </p>
         </div>
         <button
           onClick={() => handleOpenForm()}
-          className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition duration-150"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg transition duration-150"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           Add Equipment
         </button>
       </div>
 
       {/* Controls & Filter */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-3 justify-between items-center">
         <div className="relative w-full sm:max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-            <Search className="h-4 w-4" />
+            <Search className="h-3.5 w-3.5" />
           </div>
           <input
             type="text"
             placeholder="Search by Equipment Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            className="block w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs"
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
           >
             <option value="">All Statuses</option>
             <option value="Available">Available</option>
@@ -234,84 +258,115 @@ export default function Equipment() {
 
           <button
             onClick={fetchEquipments}
-            className="p-2 border border-slate-100 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-500 transition"
+            className="p-1.5 border border-slate-100 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-500 transition"
             title="Force Reload"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
+            />
           </button>
         </div>
       </div>
 
       {/* Equipment Grid */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
         {loading && equipments.length === 0 ? (
-          <div className="p-10 text-center text-slate-500 font-semibold">Loading rental fleets...</div>
+          <div className="p-6 text-center text-xs text-slate-500 font-semibold">
+            Loading rental fleets...
+          </div>
         ) : equipments.length === 0 ? (
-          <div className="p-10 text-center text-slate-400 font-semibold">No equipments registered yet.</div>
+          <div className="p-6 text-center text-xs text-slate-400 font-semibold">
+            No equipments registered yet.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-100">
               <thead className="bg-slate-50/50">
                 <tr>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Equipment Name</th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Serial Number</th>
-                  <th className="px-5 py-3 text-right text-xxs font-bold text-slate-400 uppercase">Daily Rent</th>
-                  <th className="px-5 py-3 text-right text-xxs font-bold text-slate-400 uppercase">Monthly Rent</th>
-                  <th className="px-5 py-3 text-right text-xxs font-bold text-slate-400 uppercase">Security Deposit</th>
-                  <th className="px-5 py-3 text-center text-xxs font-bold text-slate-400 uppercase">Status</th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Current Patient / Date</th>
-                  <th className="px-5 py-3 text-right text-xxs font-bold text-slate-400 uppercase">Actions</th>
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
+                    Equipment Name
+                  </th>
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
+                    Serial Number
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-bold text-slate-400 uppercase">
+                    Daily Rent
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-bold text-slate-400 uppercase">
+                    Monthly Rent
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-bold text-slate-400 uppercase">
+                    Security Deposit
+                  </th>
+                  <th className="px-3 py-2 text-center text-xs font-bold text-slate-400 uppercase">
+                    Status
+                  </th>
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
+                    Current Patient / Date
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-bold text-slate-400 uppercase">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {equipments.map((eq) => (
                   <tr key={eq._id} className="hover:bg-slate-50/50 transition">
-                    <td className="px-5 py-3 whitespace-nowrap text-xs font-bold text-slate-700">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs font-bold text-slate-700">
                       {eq.equipmentName}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-slate-500 font-mono">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-500 font-mono">
                       {eq.serialNumber || "-"}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-right font-semibold text-slate-600">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-right font-semibold text-slate-600">
                       Rs. {eq.dailyRentalPrice.toFixed(2)}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-right font-semibold text-slate-600">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-right font-semibold text-slate-600">
                       Rs. {eq.monthlyRentalPrice.toFixed(2)}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-right font-semibold text-slate-600">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-right font-semibold text-slate-600">
                       Rs. {eq.securityDeposit.toFixed(2)}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-center">
+                    <td className="px-3 py-2 whitespace-nowrap text-center">
                       <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-xxs font-bold ${
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
                           eq.status === "Available"
                             ? "bg-emerald-50 text-emerald-600"
                             : eq.status === "Rented"
-                            ? "bg-blue-50 text-blue-600"
-                            : "bg-amber-50 text-orange-600"
+                              ? "bg-blue-50 text-blue-600"
+                              : "bg-amber-50 text-orange-600"
                         }`}
                       >
                         {eq.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs">
                       {eq.status === "Rented" && eq.currentPatientId ? (
                         <div>
-                          <div className="font-bold text-slate-700">{eq.currentPatientId.name}</div>
-                          <div className="text-xxs text-slate-400">
-                            Since: {eq.rentalStartDate ? new Date(eq.rentalStartDate).toLocaleDateString("en-IN") : "N/A"}
+                          <div className="font-bold text-slate-700">
+                            {eq.currentPatientId.name}
+                          </div>
+                          <div className="text-xs text-slate-400">
+                            Since:{" "}
+                            {eq.rentalStartDate
+                              ? new Date(eq.rentalStartDate).toLocaleDateString(
+                                  "en-IN",
+                                )
+                              : "N/A"}
                           </div>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic">Unassigned</span>
+                        <span className="text-slate-400 italic">
+                          Unassigned
+                        </span>
                       )}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-right text-xs">
-                      <div className="flex justify-end gap-2">
+                    <td className="px-3 py-2 whitespace-nowrap text-right text-xs">
+                      <div className="flex justify-end gap-1.5">
                         {eq.status === "Available" && (
                           <button
                             onClick={() => handleOpenAssign(eq)}
-                            className="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded text-xxs font-bold transition"
+                            className="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded text-xs font-bold transition"
                             title="Rent to Patient"
                           >
                             Rent Out
@@ -320,7 +375,7 @@ export default function Equipment() {
                         {eq.status === "Rented" && (
                           <button
                             onClick={() => handleReturn(eq._id)}
-                            className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded text-xxs font-bold transition"
+                            className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded text-xs font-bold transition"
                             title="Return to Stock"
                           >
                             Return Fleets
@@ -331,7 +386,7 @@ export default function Equipment() {
                           className="p-1 bg-slate-100 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
                           title="Edit"
                         >
-                          <Edit2 className="h-3.5 w-3.5" />
+                          <Edit2 className="h-3 w-3" />
                         </button>
                         <button
                           onClick={() => handleDelete(eq._id)}
@@ -339,7 +394,7 @@ export default function Equipment() {
                           className="p-1 bg-slate-100 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded transition disabled:opacity-30"
                           title="Delete"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-3 w-3" />
                         </button>
                       </div>
                     </td>
@@ -354,112 +409,135 @@ export default function Equipment() {
       {/* Core Equipment Form Model */}
       {showForm && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-xl max-w-lg w-full overflow-hidden">
-            <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-extrabold text-slate-800 text-sm">
-                {editingItem ? "Edit Equipment Detail" : "Add Rentable ICU Setup"}
+          <div className="bg-white rounded-xl border border-slate-100 shadow-xl max-w-lg w-full overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+              <h2 className="font-extrabold text-slate-800 text-xs">
+                {editingItem
+                  ? "Edit Equipment Detail"
+                  : "Add Rentable ICU Setup"}
               </h2>
-              <button onClick={handleCloseForm} className="text-slate-400 hover:text-slate-600 transition">
-                <X className="h-5 w-5" />
+              <button
+                onClick={handleCloseForm}
+                className="text-slate-400 hover:text-slate-600 transition"
+              >
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 space-y-3">
               {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-md">
                   <p className="text-xs text-red-700 font-semibold">{error}</p>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Equipment Name</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase">
+                    Equipment Name
+                  </label>
                   <input
                     type="text"
                     required
                     value={equipmentName}
                     onChange={(e) => setEquipmentName(e.target.value)}
                     placeholder="ICU Bed Deluxe, Oxygen Concentrator, Syringe Pump"
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Serial Number (Unique)</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase">
+                    Serial Number (Unique)
+                  </label>
                   <input
                     type="text"
                     value={serialNumber}
                     onChange={(e) => setSerialNumber(e.target.value)}
                     placeholder="SN-BED-228"
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Rental Status</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase">
+                    Rental Status
+                  </label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     disabled={editingItem && editingItem.status === "Rented"}
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   >
                     <option value="Available">Available</option>
                     <option value="Maintenance">Maintenance</option>
-                    {editingItem && editingItem.status === "Rented" && <option value="Rented">Rented</option>}
+                    {editingItem && editingItem.status === "Rented" && (
+                      <option value="Rented">Rented</option>
+                    )}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Daily Rental Price</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase">
+                    Daily Rental Price
+                  </label>
                   <input
                     type="number"
                     required
                     value={dailyRentalPrice}
                     onChange={(e) => setDailyRentalPrice(e.target.value)}
                     placeholder="Rs. 450"
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Monthly Rental Price</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase">
+                    Monthly Rental Price
+                  </label>
                   <input
                     type="number"
                     required
                     value={monthlyRentalPrice}
                     onChange={(e) => setMonthlyRentalPrice(e.target.value)}
                     placeholder="Rs. 9500"
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Security Deposit Amount</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase">
+                    Security Deposit Amount
+                  </label>
                   <input
                     type="number"
                     required
                     value={securityDeposit}
                     onChange={(e) => setSecurityDeposit(e.target.value)}
                     placeholder="Rs. 5000"
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={handleCloseForm}
-                  className="px-4 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+                  className="px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
                 >
-                  {formLoading ? "Saving..." : editingItem ? "Update FLEETS" : "Save FLEETS"}
+                  {formLoading
+                    ? "Saving..."
+                    : editingItem
+                      ? "Update FLEETS"
+                      : "Save FLEETS"}
                 </button>
               </div>
             </form>
@@ -470,36 +548,42 @@ export default function Equipment() {
       {/* Assign to Patient Model */}
       {showAssignForm && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-xl max-w-md w-full overflow-hidden">
-            <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-extrabold text-slate-800 text-sm">
+          <div className="bg-white rounded-xl border border-slate-100 shadow-xl max-w-md w-full overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+              <h2 className="font-extrabold text-slate-800 text-xs">
                 Assign Equipment: {selectedEq?.equipmentName}
               </h2>
-              <button onClick={handleCloseAssign} className="text-slate-400 hover:text-slate-600 transition">
-                <X className="h-5 w-5" />
+              <button
+                onClick={handleCloseAssign}
+                className="text-slate-400 hover:text-slate-600 transition"
+              >
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleAssignSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleAssignSubmit} className="p-4 space-y-3">
               {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-md">
                   <p className="text-xs text-red-700 font-semibold">{error}</p>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase">Select Registered Patient</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase">
+                  Select Registered Patient
+                </label>
                 {patients.length === 0 ? (
                   <div className="mt-2 text-xs text-rose-500 font-semibold flex items-center gap-1">
-                    <ShieldAlert className="h-4 w-4" />
-                    No patient found! Register patients under 'Patients' menu first.
+                    <ShieldAlert className="h-3.5 w-3.5" />
+                    No patient found! Register patients under 'Patients' menu
+                    first.
                   </div>
                 ) : (
                   <select
                     required
                     value={assignedPatientId}
                     onChange={(e) => setAssignedPatientId(e.target.value)}
-                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   >
                     <option value="">-- Choose Patient --</option>
                     {patients.map((p) => (
@@ -511,18 +595,18 @@ export default function Equipment() {
                 )}
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={handleCloseAssign}
-                  className="px-4 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+                  className="px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading || !assignedPatientId}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
                 >
                   {formLoading ? "Assigning..." : "Assign Out"}
                 </button>

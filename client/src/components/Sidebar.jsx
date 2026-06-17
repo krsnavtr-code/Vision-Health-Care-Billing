@@ -56,19 +56,19 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
       >
         {/* Brand Header */}
         <div
-          className={`p-2 border-b border-slate-800 flex items-center gap-2.5 transition-all duration-300 ${!isOpen ? "md:justify-center md:px-0" : ""}`}
+          className={`p-1.5 border-b border-slate-800 flex items-center gap-2 transition-all duration-300 ${!isOpen ? "md:justify-center md:px-0" : ""}`}
         >
-          <div className="flex items-center gap-2.5">
-            <div className="p-1.5 bg-blue-600 rounded-lg text-white shrink-0">
-              <Activity className="h-5 w-5 animate-pulse" />
+          <div className="flex items-center gap-2">
+            <div className="p-1 bg-blue-600 rounded-lg text-white shrink-0">
+              <Activity className="h-4 w-4 animate-pulse" />
             </div>
             <div
               className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
             >
-              <h2 className="font-black text-white text-sm tracking-wider whitespace-nowrap">
+              <h2 className="font-black text-white text-xs tracking-wider whitespace-nowrap">
                 VISION HEALTH
               </h2>
-              <p className="text-xxs text-slate-500 font-bold uppercase tracking-widest whitespace-nowrap">
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest whitespace-nowrap">
                 Enterprise ERP
               </p>
             </div>
@@ -76,7 +76,7 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
         </div>
 
         {/* Navigation lists */}
-        <nav className="flex-grow p-2 space-y-1 overflow-y-auto scrollbar-none">
+        <nav className="flex-grow p-1.5 space-y-0.5 overflow-y-auto scrollbar-none">
           {menuItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = location.pathname === item.path;
@@ -90,9 +90,9 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
                   }
                 }}
                 title={!isOpen ? item.name : undefined}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all duration-150 ${
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold tracking-wide transition-all duration-150 ${
                   !isOpen
-                    ? "md:justify-center md:px-0 md:h-10 md:w-10 md:mx-auto"
+                    ? "md:justify-center md:px-0 md:h-9 md:w-9 md:mx-auto"
                     : ""
                 } ${
                   isActive
@@ -100,7 +100,7 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
                     : "hover:bg-slate-800/60 hover:text-white text-slate-400"
                 }`}
               >
-                <IconComponent className="h-4 w-4 shrink-0" />
+                <IconComponent className="h-3.5 w-3.5 shrink-0" />
                 <span
                   className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
                 >
@@ -113,16 +113,16 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
 
         {/* User Account / Footer */}
         <div
-          className={`p-2 border-t border-slate-800 space-y-3 transition-all duration-300 ${!isOpen ? "md:px-2" : ""}`}
+          className={`p-1.5 border-t border-slate-800 space-y-2 transition-all duration-300 ${!isOpen ? "md:px-1.5" : ""}`}
         >
           <div
-            className={`flex items-center gap-3 transition-all duration-300 ${!isOpen ? "md:justify-center" : ""}`}
+            className={`flex items-center gap-2 transition-all duration-300 ${!isOpen ? "md:justify-center" : ""}`}
           >
             <div
-              className="p-2 bg-slate-800 rounded-full text-slate-300 shrink-0"
+              className="p-1.5 bg-slate-800 rounded-full text-slate-300 shrink-0"
               title={`${user.name} (${user.role})`}
             >
-              <UserIcon className="h-4 w-4" />
+              <UserIcon className="h-3.5 w-3.5" />
             </div>
             <div
               className={`min-w-0 flex-grow transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
@@ -130,7 +130,7 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
               <h4 className="text-xs font-black text-white truncate leading-tight whitespace-nowrap">
                 {user.name}
               </h4>
-              <p className="text-xxs text-blue-400 font-bold uppercase tracking-wide mt-0.5 whitespace-nowrap">
+              <p className="text-xs text-blue-400 font-bold uppercase tracking-wide mt-0.5 whitespace-nowrap">
                 {user.role}
               </p>
             </div>
@@ -139,11 +139,11 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
           <button
             onClick={handleLogout}
             title={!isOpen ? "Sign Out" : undefined}
-            className={`w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-rose-950 hover:text-rose-400 rounded-xl text-xs font-bold text-slate-400 transition-all duration-150 ${
-              !isOpen ? "md:h-10 md:w-10 md:p-0 md:mx-auto" : ""
+            className={`w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-slate-800/80 hover:bg-rose-950 hover:text-rose-400 rounded-lg text-xs font-bold text-slate-400 transition-all duration-150 ${
+              !isOpen ? "md:h-9 md:w-9 md:p-0 md:mx-auto" : ""
             }`}
           >
-            <LogOut className="h-3.5 w-3.5 shrink-0" />
+            <LogOut className="h-3 w-3 shrink-0" />
             <span
               className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
             >

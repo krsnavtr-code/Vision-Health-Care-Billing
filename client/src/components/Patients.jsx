@@ -168,56 +168,56 @@ export default function Patients() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-black text-slate-800 tracking-tight">
+          <h1 className="text-lg font-black text-slate-800 tracking-tight">
             Patient Directory
           </h1>
-          <p className="text-sm text-slate-500 font-medium font-semibold">
+          <p className="text-xs text-slate-500 font-medium font-semibold">
             Register and manage hospital patients
           </p>
         </div>
         <button
           onClick={handleOpenForm}
-          className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition duration-150"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg transition duration-150"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           Add New Patient
         </button>
       </div>
 
       {/* Control Box */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-4 items-center">
+      <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex gap-3 items-center">
         <div className="relative w-full md:max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-            <Search className="h-4 w-4" />
+            <Search className="h-3.5 w-3.5" />
           </div>
           <input
             type="text"
             placeholder="Search by Patient Name or Phone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            className="block w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs"
           />
         </div>
 
         <button
           onClick={fetchPatients}
-          className="p-2 border border-slate-100 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-500 transition"
+          className="p-1.5 border border-slate-100 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-500 transition"
           title="Reload Directory"
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className="h-3.5 w-3.5" />
         </button>
       </div>
 
       {/* Listing Directory */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
         {filteredPatients.length === 0 ? (
-          <div className="p-12 text-center">
-            <User className="h-10 w-10 text-slate-300 mx-auto mb-2" />
-            <p className="text-sm text-slate-400 font-bold">
+          <div className="p-8 text-center">
+            <User className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+            <p className="text-xs text-slate-400 font-bold">
               No registered patients match your query.
             </p>
             <p className="text-xs text-slate-400 mt-1">
@@ -229,22 +229,22 @@ export default function Patients() {
             <table className="min-w-full divide-y divide-slate-100">
               <thead className="bg-slate-50/50">
                 <tr>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
                     Patient Name
                   </th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
                     Phone Number
                   </th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
                     Email Address
                   </th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                  <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
                     Home Address
                   </th>
-                  <th className="px-5 py-3 text-center text-xxs font-bold text-slate-400 uppercase">
+                  <th className="px-3 py-2 text-center text-xs font-bold text-slate-400 uppercase">
                     System ID
                   </th>
-                  <th className="px-5 py-3 text-center text-xxs font-bold text-slate-400 uppercase">
+                  <th className="px-3 py-2 text-center text-xs font-bold text-slate-400 uppercase">
                     Actions
                   </th>
                 </tr>
@@ -252,39 +252,39 @@ export default function Patients() {
               <tbody className="divide-y divide-slate-100">
                 {filteredPatients.map((p) => (
                   <tr key={p._id} className="hover:bg-slate-50/50 transition">
-                    <td className="px-5 py-3 whitespace-nowrap text-xs font-bold text-slate-700 flex items-center gap-2">
-                      <div className="p-1.5 rounded-full bg-slate-100 text-slate-500">
-                        <User className="h-3.5 w-3.5" />
+                    <td className="px-3 py-2 whitespace-nowrap text-xs font-bold text-slate-700 flex items-center gap-2">
+                      <div className="p-1 rounded-full bg-slate-100 text-slate-500">
+                        <User className="h-3 w-3" />
                       </div>
                       {p.name}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-slate-600 font-medium">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-600 font-medium">
                       {p.phoneNumber || "-"}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-slate-500">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-500">
                       {p.email}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-xs text-slate-500 max-w-xs truncate">
+                    <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-500 max-w-xs truncate">
                       {p.address || "-"}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-center text-xxs font-mono text-slate-400">
+                    <td className="px-3 py-2 whitespace-nowrap text-center text-xs font-mono text-slate-400">
                       {p._id}
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap text-center">
-                      <div className="flex items-center justify-center gap-2">
+                    <td className="px-3 py-2 whitespace-nowrap text-center">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => handleEdit(p)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          className="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                           title="Edit Patient"
                         >
-                          <Edit className="h-3.5 w-3.5" />
+                          <Edit className="h-3 w-3" />
                         </button>
                         <button
                           onClick={() => handleDelete(p._id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"
+                          className="p-1 text-red-600 hover:bg-red-50 rounded-lg transition"
                           title="Delete Patient"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-3 w-3" />
                         </button>
                       </div>
                     </td>
@@ -299,22 +299,22 @@ export default function Patients() {
       {/* Register Patient Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-xl max-w-md w-full overflow-hidden">
-            <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-extrabold text-slate-800 text-sm">
+          <div className="bg-white rounded-xl border border-slate-100 shadow-xl max-w-md w-full overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+              <h2 className="font-extrabold text-slate-800 text-xs">
                 {editingPatient ? "Edit Patient" : "Register New Patient"}
               </h2>
               <button
                 onClick={handleCloseForm}
                 className="text-slate-400 hover:text-slate-600 transition"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 space-y-3">
               {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-md">
                   <p className="text-xs text-red-700 font-semibold">{error}</p>
                 </div>
               )}
@@ -325,7 +325,7 @@ export default function Patients() {
                 </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <User className="h-4 w-4" />
+                    <User className="h-3.5 w-3.5" />
                   </div>
                   <input
                     type="text"
@@ -333,7 +333,7 @@ export default function Patients() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ramesh Kumar"
-                    className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -344,14 +344,14 @@ export default function Patients() {
                 </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <Phone className="h-4 w-4" />
+                    <Phone className="h-3.5 w-3.5" />
                   </div>
                   <input
                     type="text"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="+91 98765 00000"
-                    className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -362,14 +362,14 @@ export default function Patients() {
                 </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="h-4 w-4" />
+                    <Mail className="h-3.5 w-3.5" />
                   </div>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ramesh@gmail.com"
-                    className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -380,30 +380,30 @@ export default function Patients() {
                 </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <MapPin className="h-4 w-4" />
+                    <MapPin className="h-3.5 w-3.5" />
                   </div>
                   <input
                     type="text"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Sector 62, Noida"
-                    className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={handleCloseForm}
-                  className="px-4 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+                  className="px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
                 >
                   {formLoading
                     ? "Saving..."

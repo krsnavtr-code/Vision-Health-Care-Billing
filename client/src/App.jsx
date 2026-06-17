@@ -40,7 +40,7 @@ export default function App() {
   const handleLoginSuccess = (userData) => {
     setToken(userData.token);
     setUser(userData);
-    navigate("/dashboard");
+    navigate("/rentals");
   };
 
   const handleLogout = () => {

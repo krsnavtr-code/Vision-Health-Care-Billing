@@ -87,25 +87,25 @@ export default function HowToUse() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 p-4">
       {/* Header */}
-      <div className="max-w-6xl mx-auto mb-12 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm mb-4">
-          <Sparkles className="h-4 w-4 text-yellow-500" />
-          <span className="text-sm font-bold text-slate-600">
+      <div className="max-w-6xl mx-auto mb-8 text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm mb-3">
+          <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
+          <span className="text-xs font-bold text-slate-600">
             Quick Start Guide
           </span>
         </div>
-        <h1 className="text-4xl font-black text-slate-800 mb-3">
+        <h1 className="text-2xl font-black text-slate-800 mb-2">
           How to Use Vision Health Care
         </h1>
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+        <p className="text-sm text-slate-600 max-w-2xl mx-auto">
           Follow these simple steps to get started with billing in minutes
         </p>
       </div>
 
       {/* Progress Steps */}
-      <div className="max-w-4xl mx-auto mb-12">
+      <div className="max-w-4xl mx-auto mb-8">
         <div className="flex items-center justify-between">
           {steps.map((step, index) => {
             const Icon = step.icon;
@@ -121,11 +121,11 @@ export default function HowToUse() {
                   onClick={() => setActiveStep(index)}
                 >
                   <div
-                    className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 ${
                       isCompleted
                         ? "bg-gradient-to-br from-green-500 to-green-600 text-white"
                         : isActive
-                          ? `bg-gradient-to-br ${step.color} text-white shadow-xl ring-4 ring-offset-2 ${step.textColor.replace(
+                          ? `bg-gradient-to-br ${step.color} text-white shadow-xl ring-3 ring-offset-2 ${step.textColor.replace(
                               "text-",
                               "ring-",
                             )}`
@@ -133,13 +133,13 @@ export default function HowToUse() {
                     }`}
                   >
                     {isCompleted ? (
-                      <CheckCircle className="h-8 w-8" />
+                      <CheckCircle className="h-6 w-6" />
                     ) : (
-                      <Icon className="h-8 w-8" />
+                      <Icon className="h-6 w-6" />
                     )}
                   </div>
                   <span
-                    className={`mt-2 text-xs font-bold ${
+                    className={`mt-1.5 text-xs font-bold ${
                       isActive ? step.textColor : "text-slate-400"
                     }`}
                   >
@@ -148,7 +148,7 @@ export default function HowToUse() {
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`flex-1 h-1 mx-4 rounded-full transition-all duration-500 ${
+                    className={`flex-1 h-0.5 mx-3 rounded-full transition-all duration-500 ${
                       isCompleted ? "bg-green-500" : "bg-slate-200"
                     }`}
                   />
@@ -161,42 +161,44 @@ export default function HowToUse() {
 
       {/* Active Step Content */}
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Step Header */}
           <div
-            className={`bg-gradient-to-r ${steps[activeStep].color} p-8 text-white`}
+            className={`bg-gradient-to-r ${steps[activeStep].color} p-5 text-white`}
           >
-            <div className="flex items-center gap-4">
-              <div className="p-4 bg-white/20 rounded-2xl backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-sm">
                 {React.createElement(steps[activeStep].icon, {
-                  className: "h-10 w-10",
+                  className: "h-6 w-6",
                 })}
               </div>
               <div>
-                <h2 className="text-2xl font-black">
+                <h2 className="text-lg font-black">
                   {steps[activeStep].title}
                 </h2>
-                <p className="text-white/80">{steps[activeStep].description}</p>
+                <p className="text-white/80 text-xs">
+                  {steps[activeStep].description}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Step Content */}
-          <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {steps[activeStep].items.map((item, index) => {
                 const ItemIcon = item.icon;
                 return (
                   <div
                     key={index}
-                    className={`flex items-center gap-4 p-4 rounded-2xl ${steps[activeStep].bgColor} transition-all duration-300 hover:scale-105`}
+                    className={`flex items-center gap-3 p-3 rounded-xl ${steps[activeStep].bgColor} transition-all duration-300 hover:scale-105`}
                   >
                     <div
-                      className={`p-3 rounded-xl ${steps[activeStep].textColor} bg-white shadow-sm`}
+                      className={`p-2 rounded-lg ${steps[activeStep].textColor} bg-white shadow-sm`}
                     >
-                      <ItemIcon className="h-5 w-5" />
+                      <ItemIcon className="h-4 w-4" />
                     </div>
-                    <span className="font-semibold text-slate-700">
+                    <span className="font-semibold text-slate-700 text-xs">
                       {item.text}
                     </span>
                   </div>
@@ -205,13 +207,13 @@ export default function HowToUse() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between mt-8 pt-6 border-t border-slate-100">
+            <div className="flex justify-between mt-5 pt-4 border-t border-slate-100">
               <button
                 onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
                 disabled={activeStep === 0}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-slate-600 hover:bg-slate-100 transition disabled:opacity-50 disabled:cursor-not-allowed text-xs"
               >
-                <ArrowRight className="h-4 w-4 rotate-180" />
+                <ArrowRight className="h-3.5 w-3.5 rotate-180" />
                 Previous
               </button>
               {activeStep < steps.length - 1 ? (
@@ -219,18 +221,18 @@ export default function HowToUse() {
                   onClick={() =>
                     setActiveStep(Math.min(steps.length - 1, activeStep + 1))
                   }
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r ${steps[activeStep].color} hover:shadow-lg transition`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-white bg-gradient-to-r ${steps[activeStep].color} hover:shadow-lg transition text-xs`}
                 >
                   Next
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               ) : (
                 <button
                   onClick={() => setActiveStep(0)}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:shadow-lg transition"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:shadow-lg transition text-xs"
                 >
                   Start Over
-                  <Sparkles className="h-4 w-4" />
+                  <Sparkles className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
@@ -238,14 +240,14 @@ export default function HowToUse() {
         </div>
 
         {/* Tips Section */}
-        <div className="mt-8 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-200">
-          <div className="flex items-start gap-4">
-            <div className="p-2 bg-yellow-100 rounded-xl">
-              <Sparkles className="h-5 w-5 text-yellow-600" />
+        <div className="mt-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4 border border-yellow-200">
+          <div className="flex items-start gap-3">
+            <div className="p-1.5 bg-yellow-100 rounded-lg">
+              <Sparkles className="h-4 w-4 text-yellow-600" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-800 mb-1">Pro Tip</h3>
-              <p className="text-sm text-slate-600">
+              <h3 className="font-bold text-slate-800 mb-1 text-xs">Pro Tip</h3>
+              <p className="text-xs text-slate-600">
                 {activeStep === 0 &&
                   "Upload a transparent PNG signature and payment QR code for professional-looking invoices."}
                 {activeStep === 1 &&
@@ -261,8 +263,8 @@ export default function HowToUse() {
       </div>
 
       {/* Footer */}
-      <div className="max-w-4xl mx-auto mt-12 text-center">
-        <p className="text-sm text-slate-500">
+      <div className="max-w-4xl mx-auto mt-8 text-center">
+        <p className="text-xs text-slate-500">
           Need more help? Check the full documentation or contact support
         </p>
       </div>
