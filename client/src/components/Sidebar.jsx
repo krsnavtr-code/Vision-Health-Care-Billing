@@ -19,10 +19,10 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
   // Navigation Items Mapping
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    { name: "POS / Billing", icon: ShoppingCart, path: "/pos" },
-    { name: "Inventory", icon: Package, path: "/inventory" },
-    { name: "Equipment Rentals", icon: Layers, path: "/rentals" },
     { name: "Patients", icon: Users, path: "/patients" },
+    { name: "Equipment Rentals", icon: Layers, path: "/rentals" },
+    { name: "Inventory", icon: Package, path: "/inventory" },
+    { name: "POS / Billing", icon: ShoppingCart, path: "/pos" },
     { name: "How To Use", icon: HelpCircle, path: "/how-to-use" },
   ];
 
