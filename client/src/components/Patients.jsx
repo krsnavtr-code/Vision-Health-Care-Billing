@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { apiCall } from "../utils/api";
-import { Plus, Search, X, User, Phone, MapPin, Mail, RefreshCw } from "lucide-react";
+import {
+  Plus,
+  Search,
+  X,
+  User,
+  Phone,
+  MapPin,
+  Mail,
+  RefreshCw,
+  Edit,
+  Trash2,
+} from "lucide-react";
 
 export default function Patients() {
   const [patients, setPatients] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingPatient, setEditingPatient] = useState(null);
 
   // Form Fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  
+
   const [error, setError] = useState("");
   const [formLoading, setFormLoading] = useState(false);
 
@@ -23,7 +35,9 @@ export default function Patients() {
       // In our design, we register patients as Users with role "Patient"
       // Let's load registered patients from localStorage or fetch profile
       // To load all Patients, we can register them. We also keep a cache in localStorage for fast UX in client
-      const storedPatients = JSON.parse(localStorage.getItem("demo_patients") || "[]");
+      const storedPatients = JSON.parse(
+        localStorage.getItem("demo_patients") || "[]",
+      );
       setPatients(storedPatients);
     } catch (err) {
       console.error("Error loading patients:", err);
@@ -47,6 +61,34 @@ export default function Patients() {
 
   const handleCloseForm = () => {
     setShowForm(false);
+    setEditingPatient(null);
+  };
+
+  const handleEdit = (patient) => {
+    setEditingPatient(patient);
+    setName(patient.name);
+    setEmail(patient.email);
+    setPhoneNumber(patient.phoneNumber || "");
+    setAddress(patient.address || "");
+    setError("");
+    setShowForm(true);
+  };
+
+  const handleDelete = async (patientId) => {
+    if (!window.confirm("Are you sure you want to delete this patient?")) {
+      return;
+    }
+
+    try {
+      const storedPatients = JSON.parse(
+        localStorage.getItem("demo_patients") || "[]",
+      );
+      const updated = storedPatients.filter((p) => p._id !== patientId);
+      localStorage.setItem("demo_patients", JSON.stringify(updated));
+      setPatients(updated);
+    } catch (err) {
+      console.error("Error deleting patient:", err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,40 +99,63 @@ export default function Patients() {
     const emailStr = email.trim() || `patient_${Date.now()}@vision.com`;
 
     try {
-      // Register Patient as a DB User
-      const res = await apiCall("/auth/register", {
-        method: "POST",
-        body: JSON.stringify({
-          name: name.trim(),
-          email: emailStr.toLowerCase(),
-          password: "patient123", // Default password for patient accounts
-          role: "Patient",
-          phoneNumber: phoneNumber.trim(),
-          address: address.trim(),
-        }),
-      });
-
-      if (res.success) {
-        // Save to Local patients list cache for easy access
-        const newPatient = res.data;
-        // Wait, auth register returns { _id, name, email, role, token }.
-        // Let's normalize it to save name, email, phoneNumber, address in localStorage
-        const normalized = {
-          _id: newPatient._id,
-          name: name.trim(),
-          email: emailStr,
-          phoneNumber: phoneNumber.trim(),
-          address: address.trim(),
-        };
-
-        const storedPatients = JSON.parse(localStorage.getItem("demo_patients") || "[]");
-        const updated = [normalized, ...storedPatients];
+      if (editingPatient) {
+        // Update existing patient in localStorage
+        const storedPatients = JSON.parse(
+          localStorage.getItem("demo_patients") || "[]",
+        );
+        const updated = storedPatients.map((p) =>
+          p._id === editingPatient._id
+            ? {
+                ...p,
+                name: name.trim(),
+                email: emailStr,
+                phoneNumber: phoneNumber.trim(),
+                address: address.trim(),
+              }
+            : p,
+        );
         localStorage.setItem("demo_patients", JSON.stringify(updated));
         setPatients(updated);
         handleCloseForm();
+      } else {
+        // Register Patient as a DB User
+        const res = await apiCall("/auth/register", {
+          method: "POST",
+          body: JSON.stringify({
+            name: name.trim(),
+            email: emailStr.toLowerCase(),
+            password: "patient123", // Default password for patient accounts
+            role: "Patient",
+            phoneNumber: phoneNumber.trim(),
+            address: address.trim(),
+          }),
+        });
+
+        if (res.success) {
+          // Save to Local patients list cache for easy access
+          const newPatient = res.data;
+          // Wait, auth register returns { _id, name, email, role, token }.
+          // Let's normalize it to save name, email, phoneNumber, address in localStorage
+          const normalized = {
+            _id: newPatient._id,
+            name: name.trim(),
+            email: emailStr,
+            phoneNumber: phoneNumber.trim(),
+            address: address.trim(),
+          };
+
+          const storedPatients = JSON.parse(
+            localStorage.getItem("demo_patients") || "[]",
+          );
+          const updated = [normalized, ...storedPatients];
+          localStorage.setItem("demo_patients", JSON.stringify(updated));
+          setPatients(updated);
+          handleCloseForm();
+        }
       }
     } catch (err) {
-      setError(err.message || "Failed to register patient.");
+      setError(err.message || "Failed to save patient.");
     } finally {
       setFormLoading(false);
     }
@@ -99,7 +164,7 @@ export default function Patients() {
   const filteredPatients = patients.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      (p.phoneNumber && p.phoneNumber.includes(search))
+      (p.phoneNumber && p.phoneNumber.includes(search)),
   );
 
   return (
@@ -107,8 +172,12 @@ export default function Patients() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-black text-slate-800 tracking-tight">Patient Directory</h1>
-          <p className="text-sm text-slate-500 font-medium font-semibold">Register and manage hospital patients</p>
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight">
+            Patient Directory
+          </h1>
+          <p className="text-sm text-slate-500 font-medium font-semibold">
+            Register and manage hospital patients
+          </p>
         </div>
         <button
           onClick={handleOpenForm}
@@ -148,19 +217,36 @@ export default function Patients() {
         {filteredPatients.length === 0 ? (
           <div className="p-12 text-center">
             <User className="h-10 w-10 text-slate-300 mx-auto mb-2" />
-            <p className="text-sm text-slate-400 font-bold">No registered patients match your query.</p>
-            <p className="text-xs text-slate-400 mt-1">Add a new patient to generate custom bills.</p>
+            <p className="text-sm text-slate-400 font-bold">
+              No registered patients match your query.
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Add a new patient to generate custom bills.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-100">
               <thead className="bg-slate-50/50">
                 <tr>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Patient Name</th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Phone Number</th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Email Address</th>
-                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">Home Address</th>
-                  <th className="px-5 py-3 text-center text-xxs font-bold text-slate-400 uppercase">System ID</th>
+                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                    Patient Name
+                  </th>
+                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                    Phone Number
+                  </th>
+                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                    Email Address
+                  </th>
+                  <th className="px-5 py-3 text-left text-xxs font-bold text-slate-400 uppercase">
+                    Home Address
+                  </th>
+                  <th className="px-5 py-3 text-center text-xxs font-bold text-slate-400 uppercase">
+                    System ID
+                  </th>
+                  <th className="px-5 py-3 text-center text-xxs font-bold text-slate-400 uppercase">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -184,6 +270,24 @@ export default function Patients() {
                     <td className="px-5 py-3 whitespace-nowrap text-center text-xxs font-mono text-slate-400">
                       {p._id}
                     </td>
+                    <td className="px-5 py-3 whitespace-nowrap text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(p)}
+                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          title="Edit Patient"
+                        >
+                          <Edit className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(p._id)}
+                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"
+                          title="Delete Patient"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -197,8 +301,13 @@ export default function Patients() {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl border border-slate-100 shadow-xl max-w-md w-full overflow-hidden">
             <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-extrabold text-slate-800 text-sm">Register New Patient</h2>
-              <button onClick={handleCloseForm} className="text-slate-400 hover:text-slate-600 transition">
+              <h2 className="font-extrabold text-slate-800 text-sm">
+                {editingPatient ? "Edit Patient" : "Register New Patient"}
+              </h2>
+              <button
+                onClick={handleCloseForm}
+                className="text-slate-400 hover:text-slate-600 transition"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -211,7 +320,9 @@ export default function Patients() {
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase">Patient Name (Required)</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase">
+                  Patient Name (Required)
+                </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                     <User className="h-4 w-4" />
@@ -228,7 +339,9 @@ export default function Patients() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase">Phone Number</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase">
+                  Phone Number
+                </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                     <Phone className="h-4 w-4" />
@@ -244,7 +357,9 @@ export default function Patients() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase">Email Address (Optional)</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase">
+                  Email Address (Optional)
+                </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                     <Mail className="h-4 w-4" />
@@ -260,7 +375,9 @@ export default function Patients() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase">Permanent Address</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase">
+                  Permanent Address
+                </label>
                 <div className="mt-1 relative rounded-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                     <MapPin className="h-4 w-4" />
@@ -288,7 +405,11 @@ export default function Patients() {
                   disabled={formLoading}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
                 >
-                  {formLoading ? "Registering..." : "Register Patient"}
+                  {formLoading
+                    ? "Saving..."
+                    : editingPatient
+                      ? "Update Patient"
+                      : "Register Patient"}
                 </button>
               </div>
             </form>
