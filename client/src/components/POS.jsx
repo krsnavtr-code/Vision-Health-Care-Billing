@@ -565,7 +565,7 @@ export default function POS() {
                       <td className="px-4 py-3 whitespace-nowrap text-center">
                         {item.itemType === "Rental" ? (
                           <div className="flex justify-center items-center gap-1">
-                            <input
+                            {/* <input
                               type="number"
                               min="1"
                               value={item.rentalDays}
@@ -577,7 +577,7 @@ export default function POS() {
                                 )
                               }
                               className="w-12 border border-slate-200 rounded px-1.5 py-0.5 text-xs text-center font-bold"
-                            />
+                            /> */}
                             <select
                               value={item.rentalRateType}
                               onChange={(e) =>
@@ -660,12 +660,24 @@ export default function POS() {
 
                       {/* Line Item Total (Pre-tax representation) */}
                       <td className="px-4 py-3 whitespace-nowrap text-right text-xs font-bold text-slate-800">
-                        Rs.{" "}
-                        {(
-                          item.unitPrice *
-                          item.quantity *
-                          (item.rentalDays || 1)
-                        ).toFixed(2)}
+                        <div className="text-slate-400 line-through text-xxs">
+                          Rs. {(item.unitPrice * item.quantity).toFixed(2)}
+                        </div>
+                        <div className="text-slate-800">
+                          Rs.{" "}
+                          {(() => {
+                            const basePrice = item.unitPrice * item.quantity;
+                            let discountAmount = 0;
+                            if (item.discountType === "percentage") {
+                              discountAmount =
+                                basePrice *
+                                (parseFloat(item.discount || 0) / 100);
+                            } else {
+                              discountAmount = parseFloat(item.discount || 0);
+                            }
+                            return (basePrice - discountAmount).toFixed(2);
+                          })()}
+                        </div>
                       </td>
 
                       {/* Action */}

@@ -179,7 +179,7 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
     .fillColor(PRIMARY_RED)
     .font("Helvetica-Bold")
     .fontSize(13)
-    .text("Tax Invoice", 40, 142, { align: "center" });
+    .text("Invoice", 40, 142, { align: "center" });
 
   doc
     .moveTo(40, 160)
@@ -481,16 +481,15 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
       "",
     );
     const buffer = Buffer.from(base64Data, "base64");
-    doc.image(buffer, 420, signatoryY + 12, {
+    doc.image(buffer, 430, signatoryY + 8, {
       width: 120,
       height: 40,
-      align: "right",
     });
   }
 
   doc
-    .moveTo(400, signatoryY + 30)
-    .lineTo(550, signatoryY + 30)
+    .moveTo(430, signatoryY + 48)
+    .lineTo(550, signatoryY + 48)
     .strokeColor(TEXT_MUTED)
     .lineWidth(0.5)
     .stroke();
@@ -499,8 +498,30 @@ const generateInvoicePDF = (invoice, businessDetails, res) => {
     .fillColor(TEXT_DARK)
     .font("Helvetica-Bold")
     .fontSize(7.5)
-    .text("Authorized Signatory", 400, signatoryY + 34, {
-      width: 150,
+    .text("Authorized Signatory", 430, signatoryY + 52, {
+      width: 120,
+      align: "right",
+    });
+
+  // --- 7. FOOTER SECTION ---
+  const footerY = 780;
+  doc
+    .moveTo(40, footerY)
+    .lineTo(555, footerY)
+    .strokeColor(BORDER_COLOR)
+    .lineWidth(0.5)
+    .stroke();
+
+  doc
+    .fillColor(TEXT_MUTED)
+    .font("Helvetica")
+    .fontSize(7)
+    .text(`Website: ${bizWebsite || "N/A"}`, 40, footerY + 8, {
+      width: 250,
+      align: "left",
+    })
+    .text(`Email: ${bizEmail || "N/A"}`, 350, footerY + 8, {
+      width: 205,
       align: "right",
     });
 
