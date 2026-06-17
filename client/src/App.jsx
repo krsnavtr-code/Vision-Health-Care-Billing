@@ -9,6 +9,7 @@ import Equipment from "./components/Equipment";
 import Patients from "./components/Patients";
 import POS from "./components/POS";
 import BusinessSettings from "./components/BusinessSettings";
+import HowToUse from "./components/HowToUse";
 
 export default function App() {
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ export default function App() {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/rentals" element={<Equipment />} />
             <Route path="/patients" element={<Patients />} />
+            <Route path="/how-to-use" element={<HowToUse />} />
             {user && (user.role === "Admin" || user.role === "Manager") && (
               <Route path="/settings" element={<BusinessSettings />} />
             )}

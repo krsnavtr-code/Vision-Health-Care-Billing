@@ -10,6 +10,7 @@ import {
   LogOut,
   User as UserIcon,
   Settings,
+  HelpCircle,
 } from "lucide-react";
 
 export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
@@ -22,6 +23,7 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
     { name: "Inventory", icon: Package, path: "/inventory" },
     { name: "Equipment Rentals", icon: Layers, path: "/rentals" },
     { name: "Patients", icon: Users, path: "/patients" },
+    { name: "How To Use", icon: HelpCircle, path: "/how-to-use" },
   ];
 
   if (user && (user.role === "Admin" || user.role === "Manager")) {
