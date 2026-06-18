@@ -514,7 +514,7 @@ export default function Equipment() {
                     required
                     value={securityDeposit}
                     onChange={(e) => setSecurityDeposit(e.target.value)}
-                    placeholder="Rs. 5000"
+                    placeholder="Rs. 6002"
                     className="mt-1 block w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>

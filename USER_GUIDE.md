@@ -1,6 +1,7 @@
 # Vision Health Care Billing Software - User Guide
 
 ## Table of Contents
+
 1. [Getting Started](#getting-started)
 2. [Business Settings](#business-settings)
 3. [Patient Management](#patient-management)
@@ -13,35 +14,41 @@
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js installed
 - MongoDB running locally or cloud instance
 - Modern web browser (Chrome, Firefox, Edge)
 
 ### Installation
+
 1. Clone the repository
 2. Install dependencies:
+
    ```bash
    cd server
    npm install
-   
+
    cd ../client
    npm install
    ```
+
 3. Set up environment variables in `server/.env`:
    ```
    MONGODB_URI=your_mongodb_connection_string
-   PORT=5000
+   PORT=6002
    ```
 4. Start the servers:
+
    ```bash
    # Terminal 1 - Backend
    cd server
    npm run dev
-   
+
    # Terminal 2 - Frontend
    cd client
    npm run dev
    ```
+
 5. Open browser to `http://localhost:5173`
 
 ---
@@ -49,6 +56,7 @@
 ## Business Settings
 
 ### Overview
+
 Configure your business details that appear on invoices and PDFs.
 
 ### Step-by-Step Setup
@@ -90,6 +98,7 @@ Configure your business details that appear on invoices and PDFs.
    - Settings are saved to the database and will persist
 
 ### Important Notes
+
 - Only one business settings record exists in the system
 - Editing updates the existing record instead of creating duplicates
 - Signature and QR code images are stored as base64 in the database
@@ -100,6 +109,7 @@ Configure your business details that appear on invoices and PDFs.
 ## Patient Management
 
 ### Overview
+
 Register and manage patients for billing purposes.
 
 ### Adding a New Patient
@@ -136,6 +146,7 @@ Register and manage patients for billing purposes.
 4. Patient is removed from the directory
 
 ### Searching Patients
+
 - Use the search box to find patients by name or phone number
 - Results filter in real-time as you type
 
@@ -144,6 +155,7 @@ Register and manage patients for billing purposes.
 ## Inventory Management
 
 ### Overview
+
 Manage products, equipment, and services available for billing.
 
 ### Adding Inventory Items
@@ -164,6 +176,7 @@ Manage products, equipment, and services available for billing.
    - Click save to add to inventory
 
 ### Managing Stock
+
 - Update stock quantities as items are sold
 - Low stock alerts can be configured
 - Track inventory movements
@@ -173,6 +186,7 @@ Manage products, equipment, and services available for billing.
 ## Creating Invoices
 
 ### Overview
+
 Generate bills for patients using inventory items.
 
 ### Step-by-Step Invoice Creation
@@ -203,6 +217,7 @@ Generate bills for patients using inventory items.
    - PDF is generated automatically
 
 ### Invoice Features
+
 - Automatic invoice numbering
 - Date and time stamping
 - Business details from Business Settings
@@ -218,6 +233,7 @@ Generate bills for patients using inventory items.
 ## Viewing Invoices
 
 ### Overview
+
 Access and download previously generated invoices.
 
 ### Viewing Invoice List
@@ -244,6 +260,7 @@ Access and download previously generated invoices.
    - Terms and conditions
 
 ### Invoice Status
+
 - **Paid**: Full payment received
 - **Partial**: Partial payment received
 - **Unpaid**: No payment received
@@ -254,16 +271,19 @@ Access and download previously generated invoices.
 ## Tips and Best Practices
 
 ### Business Settings
+
 - Keep signature and QR code images optimized for fast PDF generation
 - Update bank details whenever they change
 - Verify all contact information before generating invoices
 
 ### Patient Management
+
 - Use consistent naming conventions for easier searching
 - Keep patient contact information up to date
 - Archive old patients periodically to keep directory clean
 
 ### Invoice Generation
+
 - Always verify patient details before generating invoice
 - Double-check item quantities and prices
 - Review discounts before finalizing
@@ -272,16 +292,19 @@ Access and download previously generated invoices.
 ### Troubleshooting
 
 **Images not saving:**
+
 - Ensure server is restarted after payload limit changes
 - Check that images are under 10MB in size
 - Verify server is running and accessible
 
 **PDF generation issues:**
+
 - Ensure business settings are configured
 - Check that signature and QR code images are valid
 - Verify inventory items have correct prices
 
 **Patient not found:**
+
 - Check spelling in search
 - Verify patient is registered in directory
 - Use phone number search as alternative
@@ -291,8 +314,9 @@ Access and download previously generated invoices.
 ## Support
 
 For technical issues or questions:
+
 - Check browser console for error messages
-- Verify server is running on port 5000
+- Verify server is running on port 6002
 - Ensure MongoDB connection is active
 - Review environment variables configuration
 
@@ -317,5 +341,5 @@ For technical issues or questions:
 
 ---
 
-*Last Updated: June 2026*
-*Version: 1.0*
+_Last Updated: June 2026_
+_Version: 1.0_
