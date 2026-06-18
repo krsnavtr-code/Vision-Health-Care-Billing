@@ -11,6 +11,7 @@ import {
   User as UserIcon,
   Settings,
   HelpCircle,
+  FileText,
 } from "lucide-react";
 
 export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
@@ -27,6 +28,11 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
   ];
 
   if (user && (user.role === "Admin" || user.role === "Manager")) {
+    menuItems.push({
+      name: "Bills Overview",
+      icon: FileText,
+      path: "/admin-bills",
+    });
     menuItems.push({
       name: "Business Settings",
       icon: Settings,

@@ -10,6 +10,7 @@ import Patients from "./components/Patients";
 import POS from "./components/POS";
 import BusinessSettings from "./components/BusinessSettings";
 import HowToUse from "./components/HowToUse";
+import AdminBillsOverview from "./components/AdminBillsOverview";
 
 export default function App() {
   const navigate = useNavigate();
@@ -85,7 +86,10 @@ export default function App() {
             <Route path="/patients" element={<Patients />} />
             <Route path="/how-to-use" element={<HowToUse />} />
             {user && (user.role === "Admin" || user.role === "Manager") && (
-              <Route path="/settings" element={<BusinessSettings />} />
+              <>
+                <Route path="/settings" element={<BusinessSettings />} />
+                <Route path="/admin-bills" element={<AdminBillsOverview />} />
+              </>
             )}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

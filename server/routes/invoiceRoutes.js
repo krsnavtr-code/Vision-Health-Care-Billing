@@ -5,6 +5,7 @@ import {
   getInvoices,
   getInvoiceById,
   downloadInvoicePDF,
+  getInvoicesByUser,
 } from "../controllers/invoiceController.js";
 import { protect, authorize } from "../middleware/auth.js";
 
@@ -17,5 +18,11 @@ router.post(
 router.get("/", protect, getInvoices);
 router.get("/:id", protect, getInvoiceById);
 router.get("/:id/pdf", protect, downloadInvoicePDF);
+router.get(
+  "/admin/overview",
+  protect,
+  authorize("Admin", "Manager"),
+  getInvoicesByUser,
+);
 
 export default router;

@@ -1,5 +1,4 @@
-// const API_BASE_URL = "http://localhost:6002/api";
-const API_BASE_URL = "https://www.trivixa.cloud/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeaders = () => {
   const token = localStorage.getItem("token");

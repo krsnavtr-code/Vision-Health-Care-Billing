@@ -269,4 +269,51 @@ const downloadInvoicePDF = async (req, res) => {
   }
 };
 
-export { generateInvoice, getInvoices, getInvoiceById, downloadInvoicePDF };
+// @desc    Get all invoices grouped by user/patient for admin overview
+// @route   GET /api/invoices/admin/overview
+// @access  Private (Admin, Manager)
+const getInvoicesByUser = async (req, res) => {
+  try {
+    const invoices = await Invoice.find()
+      .populate("patientId", "name email phoneNumber address")
+      .sort({ createdAt: -1 });
+
+    // Group invoices by patient
+    const groupedByUser = {};
+    invoices.forEach((invoice) => {
+      if (!invoice.patientId) return;
+
+      const patientId = invoice.patientId._id.toString();
+      if (!groupedByUser[patientId]) {
+        groupedByUser[patientId] = {
+          patient: invoice.patientId,
+          invoices: [],
+          totalBills: 0,
+          totalAmount: 0,
+        };
+      }
+
+      groupedByUser[patientId].invoices.push(invoice);
+      groupedByUser[patientId].totalBills += 1;
+      groupedByUser[patientId].totalAmount += invoice.grandTotal || 0;
+    });
+
+    // Convert to array and sort by total amount descending
+    const result = Object.values(groupedByUser).sort(
+      (a, b) => b.totalAmount - a.totalAmount,
+    );
+
+    res.json({ success: true, count: result.length, data: result });
+  } catch (error) {
+    console.error("Get Invoices By User Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export {
+  generateInvoice,
+  getInvoices,
+  getInvoiceById,
+  downloadInvoicePDF,
+  getInvoicesByUser,
+};
