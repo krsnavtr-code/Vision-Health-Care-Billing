@@ -13,6 +13,7 @@ import HowToUse from "./components/HowToUse";
 import AdminBillsOverview from "./components/AdminBillsOverview";
 import StaffManagement from "./components/StaffManagement";
 import StaffBilling from "./components/StaffBilling";
+import StaffBillsOverview from "./components/StaffBillsOverview";
 
 export default function App() {
   const navigate = useNavigate();
@@ -93,6 +94,10 @@ export default function App() {
                 <Route path="/admin-bills" element={<AdminBillsOverview />} />
                 <Route path="/staff-management" element={<StaffManagement />} />
                 <Route path="/staff-billing" element={<StaffBilling />} />
+                <Route
+                  path="/staff-bills-overview"
+                  element={<StaffBillsOverview />}
+                />
               </>
             )}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

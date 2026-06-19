@@ -202,10 +202,52 @@ const updateStaffInvoicePayment = async (req, res) => {
   }
 };
 
+// @desc    Get staff invoices overview grouped by staff
+// @route   GET /api/staff-invoices/overview
+// @access  Private (Admin, Manager)
+const getStaffInvoicesOverview = async (req, res) => {
+  try {
+    const invoices = await StaffInvoice.find()
+      .populate("staffId", "name phone designation")
+      .sort({ createdAt: -1 });
+
+    // Group invoices by staff
+    const staffBillsMap = new Map();
+
+    invoices.forEach((invoice) => {
+      if (!invoice.staffId) return;
+
+      const staffId = invoice.staffId._id.toString();
+
+      if (!staffBillsMap.has(staffId)) {
+        staffBillsMap.set(staffId, {
+          staff: invoice.staffId,
+          invoices: [],
+          totalBills: 0,
+          totalAmount: 0,
+        });
+      }
+
+      const staffBill = staffBillsMap.get(staffId);
+      staffBill.invoices.push(invoice);
+      staffBill.totalBills += 1;
+      staffBill.totalAmount += invoice.totalAmount || 0;
+    });
+
+    const staffBills = Array.from(staffBillsMap.values());
+
+    res.json({ success: true, data: staffBills });
+  } catch (error) {
+    console.error("Get Staff Invoices Overview Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export {
   generateStaffInvoice,
   getStaffInvoices,
   getStaffInvoiceById,
   downloadStaffInvoicePDF,
   updateStaffInvoicePayment,
+  getStaffInvoicesOverview,
 };

@@ -14,42 +14,51 @@ import {
   FileText,
   UserCog,
   Receipt,
+  ChevronDown,
 } from "lucide-react";
 
 export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
   const location = useLocation();
 
-  // Navigation Items Mapping
-  const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    { name: "Patients", icon: Users, path: "/patients" },
-    { name: "Equipment Rentals", icon: Layers, path: "/rentals" },
-    { name: "Inventory", icon: Package, path: "/inventory" },
-    { name: "POS / Billing", icon: ShoppingCart, path: "/pos" },
-    { name: "How To Use", icon: HelpCircle, path: "/how-to-use" },
+  // Navigation Items with Categories
+  const menuCategories = [
+    {
+      name: "Client/Patient",
+      items: [
+        { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+        { name: "Patients", icon: Users, path: "/patients" },
+        { name: "Inventory", icon: Package, path: "/inventory" },
+        { name: "Equipment Rentals", icon: Layers, path: "/rentals" },
+        { name: "Create Billing", icon: ShoppingCart, path: "/pos" },
+        { name: "All Patients Bills", icon: FileText, path: "/admin-bills" },
+      ],
+    },
+    {
+      name: "Staff/Employees",
+      items: [],
+      adminOnly: true,
+    },
+    {
+      name: "Others",
+
+      items: [
+        { name: "Business Settings", icon: Settings, path: "/settings" },
+        { name: "How To Use", icon: HelpCircle, path: "/how-to-use" },
+      ],
+    },
   ];
 
+  // Add admin items if user is Admin or Manager
   if (user && (user.role === "Admin" || user.role === "Manager")) {
-    menuItems.push({
-      name: "Bills Overview",
-      icon: FileText,
-      path: "/admin-bills",
-    });
-    menuItems.push({
-      name: "Staff Management",
-      icon: UserCog,
-      path: "/staff-management",
-    });
-    menuItems.push({
-      name: "Staff Billing",
-      icon: Receipt,
-      path: "/staff-billing",
-    });
-    menuItems.push({
-      name: "Business Settings",
-      icon: Settings,
-      path: "/settings",
-    });
+    menuCategories[1].items = [
+      { name: "Add/View Staff", icon: UserCog, path: "/staff-management" },
+      { name: "Create Staff Bill", icon: Receipt, path: "/staff-billing" },
+      {
+        name: "All Staff Bills",
+        icon: FileText,
+        path: "/staff-bills-overview",
+      },
+    ];
   }
 
   return (
@@ -94,37 +103,65 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
         </div>
 
         {/* Navigation lists */}
-        <nav className="flex-grow p-1.5 space-y-0.5 overflow-y-auto scrollbar-none">
-          {menuItems.map((item) => {
-            const IconComponent = item.icon;
-            const isActive = location.pathname === item.path;
+        <nav className="flex-grow p-1.5 space-y-3 overflow-y-auto scrollbar-none">
+          {menuCategories.map((category) => {
+            // Skip admin category if user is not admin/manager or if category is empty
+            if (
+              category.adminOnly &&
+              (!user || (user.role !== "Admin" && user.role !== "Manager"))
+            ) {
+              return null;
+            }
+            if (category.items.length === 0) {
+              return null;
+            }
+
             return (
-              <Link
-                key={item.name}
-                to={item.path}
-                onClick={() => {
-                  if (window.innerWidth < 768) {
-                    onClose();
-                  }
-                }}
-                title={!isOpen ? item.name : undefined}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold tracking-wide transition-all duration-150 ${
-                  !isOpen
-                    ? "md:justify-center md:px-0 md:h-9 md:w-9 md:mx-auto"
-                    : ""
-                } ${
-                  isActive
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
-                    : "hover:bg-slate-800/60 hover:text-white text-slate-400"
-                }`}
-              >
-                <IconComponent className="h-3.5 w-3.5 shrink-0" />
-                <span
-                  className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
-                >
-                  {item.name}
-                </span>
-              </Link>
+              <div key={category.name}>
+                {/* Category Header */}
+                {isOpen && (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-black text-slate-500 uppercase tracking-wider">
+                    <ChevronDown className="h-3 w-3" />
+                    {category.name}
+                  </div>
+                )}
+
+                {/* Category Items */}
+                <div className="space-y-0.5">
+                  {category.items.map((item) => {
+                    const IconComponent = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.path}
+                        onClick={() => {
+                          if (window.innerWidth < 768) {
+                            onClose();
+                          }
+                        }}
+                        title={!isOpen ? item.name : undefined}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold tracking-wide transition-all duration-150 ${
+                          !isOpen
+                            ? "md:justify-center md:px-0 md:h-9 md:w-9 md:mx-auto"
+                            : ""
+                        } ${
+                          isActive
+                            ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
+                            : "hover:bg-slate-800/60 hover:text-white text-slate-400"
+                        }`}
+                      >
+                        <IconComponent className="h-3.5 w-3.5 shrink-0" />
+                        <span
+                          className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
+                        >
+                          {item.name}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </nav>
