@@ -151,12 +151,33 @@ const downloadStaffInvoicePDF = async (req, res) => {
     // Fetch business details
     const businessDetails = await BusinessDetails.findOne();
 
+    // Generate custom filename: Name + Month Year + Invoice
+    const billingDate = new Date(invoice.billingPeriod.startDate);
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const monthName = monthNames[billingDate.getUTCMonth()];
+    const year = billingDate.getUTCFullYear();
+    const staffName = invoice.staffId?.name || "Staff";
+    const filename = `${staffName} ${monthName} ${year} Invoice.pdf`.replace(
+      /\s+/g,
+      " ",
+    );
+
     // Set response headers
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${invoice.invoiceNumber}.pdf`,
-    );
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
 
     generateStaffInvoicePDF(invoice, businessDetails, res);
   } catch (error) {

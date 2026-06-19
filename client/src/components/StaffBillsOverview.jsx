@@ -64,7 +64,20 @@ export default function StaffBillsOverview() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `staff-invoice-${invoiceId}.pdf`;
+
+      // Extract filename from Content-Disposition header
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let filename = `staff-invoice-${invoiceId}.pdf`;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
+        );
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, "");
+        }
+      }
+      a.download = filename;
+
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
