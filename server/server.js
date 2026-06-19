@@ -66,7 +66,7 @@ const server = http.createServer(app);
 // Socket.io setup for Real-time communication
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Vite ka default port
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
   },
 });

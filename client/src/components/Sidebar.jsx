@@ -15,6 +15,7 @@ import {
   UserCog,
   Receipt,
   ChevronDown,
+  BarChart3,
 } from "lucide-react";
 
 export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
@@ -51,6 +52,7 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
   // Add admin items if user is Admin or Manager
   if (user && (user.role === "Admin" || user.role === "Manager")) {
     menuCategories[1].items = [
+      { name: "Staff Dashboard", icon: BarChart3, path: "/staff-dashboard" },
       { name: "Add/View Staff", icon: UserCog, path: "/staff-management" },
       { name: "Create Staff Bill", icon: Receipt, path: "/staff-billing" },
       {

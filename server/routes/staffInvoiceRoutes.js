@@ -7,6 +7,7 @@ import {
   downloadStaffInvoicePDF,
   updateStaffInvoicePayment,
   getStaffInvoicesOverview,
+  getStaffAnalytics,
 } from "../controllers/staffInvoiceController.js";
 import { protect, authorize } from "../middleware/auth.js";
 
@@ -17,6 +18,12 @@ router.get(
   protect,
   authorize("Admin", "Manager"),
   getStaffInvoicesOverview,
+);
+router.get(
+  "/analytics",
+  protect,
+  authorize("Admin", "Manager"),
+  getStaffAnalytics,
 );
 router.get("/:id", protect, authorize("Admin", "Manager"), getStaffInvoiceById);
 router.get(

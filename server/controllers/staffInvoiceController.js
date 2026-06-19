@@ -264,6 +264,140 @@ const getStaffInvoicesOverview = async (req, res) => {
   }
 };
 
+// @desc    Get staff analytics dashboard data
+// @route   GET /api/staff-invoices/analytics
+// @access  Private (Admin, Manager)
+const getStaffAnalytics = async (req, res) => {
+  try {
+    const totalStaff = await Staff.countDocuments({ status: "Active" });
+    const totalInvoices = await StaffInvoice.countDocuments();
+    const invoices = await StaffInvoice.find().populate(
+      "staffId",
+      "name designation",
+    );
+
+    // Calculate totals
+    const totalAmount = invoices.reduce(
+      (sum, inv) => sum + (inv.totalAmount || 0),
+      0,
+    );
+    const totalPaid = invoices.reduce(
+      (sum, inv) => sum + (inv.amountPaid || 0),
+      0,
+    );
+    const totalDeduction = invoices.reduce(
+      (sum, inv) => sum + (inv.deduction || 0),
+      0,
+    );
+    const totalBalance = invoices.reduce(
+      (sum, inv) => sum + (inv.balance || 0),
+      0,
+    );
+
+    // Payment status breakdown
+    const paymentStatusBreakdown = {
+      Paid: 0,
+      Pending: 0,
+      "Partially Paid": 0,
+    };
+    invoices.forEach((inv) => {
+      if (paymentStatusBreakdown[inv.paymentStatus] !== undefined) {
+        paymentStatusBreakdown[inv.paymentStatus]++;
+      }
+    });
+
+    // Payment method breakdown
+    const paymentMethodBreakdown = {};
+    invoices.forEach((inv) => {
+      const method = inv.paymentMethod || "Unknown";
+      paymentMethodBreakdown[method] =
+        (paymentMethodBreakdown[method] || 0) + 1;
+    });
+
+    // Monthly trends (last 6 months)
+    const monthlyTrends = [];
+    const now = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthStart = new Date(
+        Date.UTC(monthDate.getFullYear(), monthDate.getMonth(), 1),
+      );
+      const monthEnd = new Date(
+        Date.UTC(monthDate.getFullYear(), monthDate.getMonth() + 1, 0),
+      );
+
+      const monthInvoices = invoices.filter((inv) => {
+        const invDate = new Date(inv.createdAt);
+        return invDate >= monthStart && invDate <= monthEnd;
+      });
+
+      const monthAmount = monthInvoices.reduce(
+        (sum, inv) => sum + (inv.totalAmount || 0),
+        0,
+      );
+      const monthPaid = monthInvoices.reduce(
+        (sum, inv) => sum + (inv.amountPaid || 0),
+        0,
+      );
+
+      monthlyTrends.push({
+        month: monthDate.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        }),
+        amount: monthAmount,
+        paid: monthPaid,
+        count: monthInvoices.length,
+      });
+    }
+
+    // Top staff by amount
+    const staffAmountMap = new Map();
+    invoices.forEach((inv) => {
+      if (!inv.staffId) return;
+      const staffId = inv.staffId._id.toString();
+      const current = staffAmountMap.get(staffId) || {
+        amount: 0,
+        name: inv.staffId.name,
+      };
+      current.amount += inv.totalAmount || 0;
+      staffAmountMap.set(staffId, current);
+    });
+
+    const topStaff = Array.from(staffAmountMap.values())
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+
+    // Recent invoices (last 10)
+    const recentInvoices = await StaffInvoice.find()
+      .populate("staffId", "name designation")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalStaff,
+          totalInvoices,
+          totalAmount,
+          totalPaid,
+          totalDeduction,
+          totalBalance,
+        },
+        paymentStatusBreakdown,
+        paymentMethodBreakdown,
+        monthlyTrends,
+        topStaff,
+        recentInvoices,
+      },
+    });
+  } catch (error) {
+    console.error("Get Staff Analytics Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export {
   generateStaffInvoice,
   getStaffInvoices,
@@ -271,4 +405,5 @@ export {
   downloadStaffInvoicePDF,
   updateStaffInvoicePayment,
   getStaffInvoicesOverview,
+  getStaffAnalytics,
 };
