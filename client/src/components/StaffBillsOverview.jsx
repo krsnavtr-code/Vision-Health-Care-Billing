@@ -211,7 +211,10 @@ export default function StaffBillsOverview() {
                               Bill No
                             </th>
                             <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
-                              Date
+                              Create Date
+                            </th>
+                            <th className="px-3 py-2 text-left text-xs font-bold text-slate-400 uppercase">
+                              Bill Month
                             </th>
                             <th className="px-3 py-2 text-right text-xs font-bold text-slate-400 uppercase">
                               Amount
@@ -235,6 +238,14 @@ export default function StaffBillsOverview() {
                               </td>
                               <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-600">
                                 {formatDate(invoice.createdAt)}
+                              </td>
+                              <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-600">
+                                {new Date(
+                                  invoice.billingPeriod.startDate,
+                                ).toLocaleDateString("en-IN", {
+                                  month: "short",
+                                  year: "numeric",
+                                })}
                               </td>
                               <td className="px-3 py-2 whitespace-nowrap text-right text-xs font-semibold text-slate-800">
                                 ₹{invoice.totalAmount?.toFixed(2) || "0.00"}
