@@ -98,7 +98,7 @@ export default function Login({ onLoginSuccess }) {
             Account Pending Approval
           </h2>
           <p className="mt-2 text-center text-xs text-slate-600">
-            Vision Health Care Portal
+            VISION HEALTH CARE ERP
           </p>
         </div>
 
@@ -164,10 +164,10 @@ export default function Login({ onLoginSuccess }) {
           <Activity className="h-10 w-10 animate-pulse" />
         </div>
         <h2 className="text-center text-xl font-extrabold text-slate-900 tracking-tight">
-          Vision Health Care
+          VISION HEALTH CARE ERP
         </h2>
         <p className="mt-2 text-center text-xs text-slate-600">
-          Smart ERP & Billing Engine
+          Enterprise Resource Planning System
         </p>
       </div>
 

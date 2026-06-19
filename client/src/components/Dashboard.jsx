@@ -90,7 +90,7 @@ export default function Dashboard({ onNavigateToPos }) {
             ERP Dashboard
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            Vision Health Care real-time operations status
+            VISION HEALTH CARE ERP - Real-time Operations Status
           </p>
         </div>
         <button

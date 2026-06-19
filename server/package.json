@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "vision-health-care-erp-server",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",

@@ -58,7 +58,7 @@ app.use("/api/staff-invoices", staffInvoiceRoutes);
 
 // Base welcome route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Vision Health Care Billing API!" });
+  res.json({ message: "Welcome to VISION HEALTH CARE ERP API!" });
 });
 
 const server = http.createServer(app);

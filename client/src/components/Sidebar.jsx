@@ -95,10 +95,10 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
               className={`transition-all duration-200 ${!isOpen ? "md:opacity-0 md:w-0 md:overflow-hidden md:hidden" : "opacity-100"}`}
             >
               <h2 className="font-black text-white text-xs tracking-wider whitespace-nowrap">
-                VISION HEALTH
+                VISION HEALTH CARE
               </h2>
               <p className="text-xs text-slate-500 font-bold uppercase tracking-widest whitespace-nowrap">
-                Enterprise ERP
+                ERP
               </p>
             </div>
           </div>
