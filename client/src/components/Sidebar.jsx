@@ -12,6 +12,8 @@ import {
   Settings,
   HelpCircle,
   FileText,
+  UserCog,
+  Receipt,
 } from "lucide-react";
 
 export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
@@ -32,6 +34,16 @@ export default function Sidebar({ user, handleLogout, isOpen, onClose }) {
       name: "Bills Overview",
       icon: FileText,
       path: "/admin-bills",
+    });
+    menuItems.push({
+      name: "Staff Management",
+      icon: UserCog,
+      path: "/staff-management",
+    });
+    menuItems.push({
+      name: "Staff Billing",
+      icon: Receipt,
+      path: "/staff-billing",
     });
     menuItems.push({
       name: "Business Settings",

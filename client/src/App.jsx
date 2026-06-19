@@ -11,6 +11,8 @@ import POS from "./components/POS";
 import BusinessSettings from "./components/BusinessSettings";
 import HowToUse from "./components/HowToUse";
 import AdminBillsOverview from "./components/AdminBillsOverview";
+import StaffManagement from "./components/StaffManagement";
+import StaffBilling from "./components/StaffBilling";
 
 export default function App() {
   const navigate = useNavigate();
@@ -89,6 +91,8 @@ export default function App() {
               <>
                 <Route path="/settings" element={<BusinessSettings />} />
                 <Route path="/admin-bills" element={<AdminBillsOverview />} />
+                <Route path="/staff-management" element={<StaffManagement />} />
+                <Route path="/staff-billing" element={<StaffBilling />} />
               </>
             )}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

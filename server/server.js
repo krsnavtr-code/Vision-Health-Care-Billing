@@ -12,6 +12,8 @@ import equipmentRoutes from "./routes/equipmentRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import shiftRoutes from "./routes/shiftRoutes.js";
 import businessRoutes from "./routes/businessRoutes.js";
+import staffRoutes from "./routes/staffRoutes.js";
+import staffInvoiceRoutes from "./routes/staffInvoiceRoutes.js";
 
 // Only set DNS in development/local environment
 if (process.env.NODE_ENV !== "production") {
@@ -47,6 +49,8 @@ app.use("/api/equipment", equipmentRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/business-details", businessRoutes);
 app.use("/api/shifts", shiftRoutes);
+app.use("/api/staff", staffRoutes);
+app.use("/api/staff-invoices", staffInvoiceRoutes);
 
 // Base welcome route
 app.get("/", (req, res) => {
