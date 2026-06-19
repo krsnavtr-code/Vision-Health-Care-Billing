@@ -79,13 +79,13 @@ export default function StaffBilling() {
       setFormLoading(true);
       setError("");
 
-      // Convert month/year to startDate/endDate
+      // Convert month/year to startDate/endDate (use UTC to avoid timezone issues)
       const startDate = new Date(
-        billingPeriod.year,
-        billingPeriod.month - 1,
-        1,
+        Date.UTC(billingPeriod.year, billingPeriod.month - 1, 1),
       );
-      const endDate = new Date(billingPeriod.year, billingPeriod.month, 0);
+      const endDate = new Date(
+        Date.UTC(billingPeriod.year, billingPeriod.month, 0),
+      );
 
       const totalSalaryNum = parseFloat(totalSalary) || 0;
       const deductionNum = parseFloat(deduction) || 0;
@@ -260,8 +260,12 @@ export default function StaffBilling() {
                         </div>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-xs text-slate-600">
-                        {formatDate(invoice.billingPeriod.startDate)} -{" "}
-                        {formatDate(invoice.billingPeriod.endDate)}
+                        {new Date(
+                          invoice.billingPeriod.startDate,
+                        ).toLocaleDateString("en-IN", {
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-right text-xs font-semibold text-slate-800">
                         ₹{invoice.totalAmount?.toFixed(2) || "0.00"}

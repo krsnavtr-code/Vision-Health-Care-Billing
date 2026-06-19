@@ -266,8 +266,9 @@ const generateStaffInvoicePDF = (staffInvoice, businessDetails, res) => {
     "November",
     "December",
   ];
-  const monthName = monthNames[billingDate.getMonth()];
-  const year = billingDate.getFullYear();
+  // Use UTC methods to avoid timezone issues
+  const monthName = monthNames[billingDate.getUTCMonth()];
+  const year = billingDate.getUTCFullYear();
 
   doc
     .fillColor(TEXT_DARK)
